@@ -69,13 +69,13 @@ func (b *Bot) handleHowToLink(_ context.Context, i *discordgo.InteractionCreate)
 	var steps string
 	if b.nameOnlyLinking() {
 		steps = "**1.** Log in to the server at least once with your character.\n" +
-			"**2.** In Discord, run `/link character:<name>`.\n" +
+			"**2.** In Discord, run `/link name:<your character name>`.\n" +
 			"**3.** Type your character name **exactly** as it appears in-game " +
 			"(capital letters matter — `Muad'Dib` is not `muad'dib`).\n\n" +
 			"That's it — you don't need any ID. The bot finds your account from your character name."
 	} else {
 		steps = "**1.** Log in to the server at least once with your character.\n" +
-			"**2.** In Discord, run `/link character:<name> account_id:<id>`.\n" +
+			"**2.** In Discord, run `/link name:<your character name> account_id:<id>`.\n" +
 			"**3.** Type your character name **exactly** as in-game (capitals matter).\n" +
 			"**4.** For `account_id`, use the account/FLS id shown by your server admin " +
 			"(ask in the support channel if you're not sure)."
