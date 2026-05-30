@@ -32,8 +32,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("config: %v", err)
 	}
-	log.Printf("currency=%q per_minute=%d accrual=%s db=%s:%d/%s",
-		cfg.Economy.CurrencyName, cfg.Economy.PerMinute, cfg.Economy.AccrualDuration(),
+	log.Printf("currency=%q playtime=%v(%d/%s) votes=%v realmoney=%v db=%s:%d/%s",
+		cfg.Economy.CurrencyName,
+		cfg.Economy.Playtime.Enabled, cfg.Economy.Playtime.PerMinute, cfg.Economy.Playtime.AccrualDuration(),
+		cfg.Economy.Votes.Enabled, cfg.Economy.RealMoney.Enabled,
 		cfg.Database.Host, cfg.Database.Port, cfg.Database.Name)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)

@@ -36,29 +36,51 @@ type DiscordConfig struct {
 	AdminRoleID string `yaml:"admin_role_id"`
 }
 
-// EconomyConfig configures playtime rewards.
+// EconomyConfig configures how players earn or buy currency.
 type EconomyConfig struct {
-	CurrencyName    string `yaml:"currency_name"`
+	CurrencyName string          `yaml:"currency_name"`
+	Playtime     PlaytimeConfig  `yaml:"playtime"`
+	Votes        VotesConfig     `yaml:"votes"`
+	RealMoney    RealMoneyConfig `yaml:"realmoney"`
+}
+
+// PlaytimeConfig rewards players for time spent online.
+type PlaytimeConfig struct {
+	Enabled         bool   `yaml:"enabled"`
 	PerMinute       int64  `yaml:"per_minute"`
 	AccrualInterval string `yaml:"accrual_interval"` // Go duration string, e.g. "60s"
+}
+
+// AccrualDuration parses AccrualInterval, falling back to one minute.
+func (p PlaytimeConfig) AccrualDuration() time.Duration {
+	if p.AccrualInterval == "" {
+		return time.Minute
+	}
+	d, err := time.ParseDuration(p.AccrualInterval)
+	if err != nil || d <= 0 {
+		return time.Minute
+	}
+	return d
+}
+
+// VotesConfig rewards players for voting on server-list sites.
+type VotesConfig struct {
+	Enabled bool  `yaml:"enabled"`
+	Reward  int64 `yaml:"reward"`
+}
+
+// RealMoneyConfig enables buying currency packs with real money.
+type RealMoneyConfig struct {
+	Enabled   bool   `yaml:"enabled"`
+	Provider  string `yaml:"provider"` // stripe | paypal
+	PublicKey string `yaml:"public_key"`
+	SecretKey string `yaml:"secret_key"`
 }
 
 // DeliveryConfig configures in-game item delivery.
 type DeliveryConfig struct {
 	AMPContainer string `yaml:"amp_container"`
 	FLSToken     string `yaml:"fls_token"`
-}
-
-// AccrualDuration parses AccrualInterval, falling back to one minute.
-func (e EconomyConfig) AccrualDuration() time.Duration {
-	if e.AccrualInterval == "" {
-		return time.Minute
-	}
-	d, err := time.ParseDuration(e.AccrualInterval)
-	if err != nil || d <= 0 {
-		return time.Minute
-	}
-	return d
 }
 
 // Load reads YAML config from path and applies env overrides for secrets.
@@ -82,9 +104,12 @@ func defaults() *Config {
 	return &Config{
 		ListenAddr: "0.0.0.0:8090",
 		Economy: EconomyConfig{
-			CurrencyName:    "Solari",
-			PerMinute:       1,
-			AccrualInterval: "60s",
+			CurrencyName: "Solari",
+			Playtime: PlaytimeConfig{
+				Enabled:         true,
+				PerMinute:       1,
+				AccrualInterval: "60s",
+			},
 		},
 	}
 }
@@ -99,14 +124,20 @@ func (c *Config) applyEnv() {
 	if v := os.Getenv("DUNE_SHOP_FLS_TOKEN"); v != "" {
 		c.Delivery.FLSToken = v
 	}
+	if v := os.Getenv("DUNE_SHOP_PAYMENT_SECRET"); v != "" {
+		c.Economy.RealMoney.SecretKey = v
+	}
 }
 
 func (c *Config) validate() error {
 	if c.Database.Host == "" || c.Database.Port == 0 {
 		return fmt.Errorf("database.host and database.port are required")
 	}
-	if c.Economy.PerMinute < 0 {
-		return fmt.Errorf("economy.per_minute must be >= 0")
+	if c.Economy.Playtime.PerMinute < 0 {
+		return fmt.Errorf("economy.playtime.per_minute must be >= 0")
+	}
+	if c.Economy.RealMoney.Enabled && c.Economy.RealMoney.Provider == "" {
+		return fmt.Errorf("economy.realmoney.provider required when realmoney enabled")
 	}
 	return nil
 }

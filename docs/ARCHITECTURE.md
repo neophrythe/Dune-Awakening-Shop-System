@@ -38,7 +38,7 @@ the game DB and RabbitMQ broker are reachable).
 | `cmd/dune-shop` | Entry point: load config, wire components, run, graceful shutdown |
 | `internal/config` | YAML config + env overrides for secrets |
 | `internal/store` | Postgres data layer: wallets, transactions, catalogue, linked accounts |
-| `internal/economy` | Playtime → currency accrual worker |
+| `internal/economy` | Currency sources: playtime accrual, vote-reward webhooks, real-money top-ups (Stripe/PayPal) |
 | `internal/delivery` | Deliver purchased items into the game (FLS/RabbitMQ) |
 | `internal/shop` | Shop domain: catalogue, pricing, stock, checkout/purchase flow |
 | `internal/discord` | discordgo bot, slash commands, interaction handlers |
