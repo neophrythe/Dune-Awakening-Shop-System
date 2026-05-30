@@ -9,7 +9,7 @@ func commandDefs() []*discordgo.ApplicationCommand {
 			Name:        "link",
 			Description: "Connect your Discord to your in-game character (run /howtolink if unsure)",
 			Options: []*discordgo.ApplicationCommandOption{
-				{Type: discordgo.ApplicationCommandOptionString, Name: "character", Description: "Your exact in-game character name (case-sensitive)", Required: true},
+				{Type: discordgo.ApplicationCommandOptionString, Name: "name", Description: "Your exact in-game character name (case-sensitive)", Required: true},
 				{Type: discordgo.ApplicationCommandOptionString, Name: "account_id", Description: "Only if asked: your account/FLS id. Usually leave this blank.", Required: false},
 			},
 		},
