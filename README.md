@@ -174,6 +174,27 @@ delivery:
 | `POST /webhook/payment` | Credit a player after a payment | `X-Webhook-Secret` header |
 | `GET /healthz` | Liveness probe | — |
 
+## 🖥️ Admin Dashboard
+
+A login-protected web panel for managing the shop: overview stats, item CRUD,
+the kit/pack builder, linked players with balances, and the live transaction
+ledger. Built as a React SPA and **embedded into the binary** by `make build`.
+
+Enable it in `config.yaml`:
+
+```yaml
+web:
+  enabled: true
+  listen_addr: "0.0.0.0:8091"
+  admin_user: "admin"
+  admin_password: ""        # prefer the DUNE_SHOP_WEB_PASSWORD env var
+  session_secret: ""        # random string; prefer DUNE_SHOP_WEB_SECRET
+```
+
+Then browse to `http://<host>:8091` and sign in. Sessions are stateless,
+HMAC-signed cookies (12 h). Run the service behind a TLS-terminating reverse
+proxy if it is exposed to the internet.
+
 ---
 
 ## 🗺️ Roadmap
