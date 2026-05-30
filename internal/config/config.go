@@ -19,6 +19,16 @@ type Config struct {
 	Economy    EconomyConfig  `yaml:"economy"`
 	Delivery   DeliveryConfig `yaml:"delivery"`
 	Game       GameConfig     `yaml:"game"`
+	Web        WebConfig      `yaml:"web"`
+}
+
+// WebConfig configures the admin dashboard (HTTP API + SPA).
+type WebConfig struct {
+	Enabled       bool   `yaml:"enabled"`
+	ListenAddr    string `yaml:"listen_addr"`    // e.g. "0.0.0.0:8091"
+	AdminUser     string `yaml:"admin_user"`     // dashboard login user
+	AdminPassword string `yaml:"admin_password"` // prefer DUNE_SHOP_WEB_PASSWORD env var
+	SessionSecret string `yaml:"session_secret"` // HMAC key for session cookies; prefer DUNE_SHOP_WEB_SECRET
 }
 
 // GameConfig holds deployment-specific queries against the game database.
@@ -154,6 +164,12 @@ func (c *Config) applyEnv() {
 	if v := os.Getenv("DUNE_SHOP_PAYMENT_SECRET"); v != "" {
 		c.Economy.RealMoney.SecretKey = v
 	}
+	if v := os.Getenv("DUNE_SHOP_WEB_PASSWORD"); v != "" {
+		c.Web.AdminPassword = v
+	}
+	if v := os.Getenv("DUNE_SHOP_WEB_SECRET"); v != "" {
+		c.Web.SessionSecret = v
+	}
 }
 
 func (c *Config) validate() error {
@@ -165,6 +181,14 @@ func (c *Config) validate() error {
 	}
 	if c.Economy.RealMoney.Enabled && c.Economy.RealMoney.Provider == "" {
 		return fmt.Errorf("economy.realmoney.provider required when realmoney enabled")
+	}
+	if c.Web.Enabled {
+		if c.Web.AdminUser == "" || c.Web.AdminPassword == "" {
+			return fmt.Errorf("web.admin_user and web.admin_password required when web enabled")
+		}
+		if c.Web.SessionSecret == "" {
+			return fmt.Errorf("web.session_secret required when web enabled (set DUNE_SHOP_WEB_SECRET)")
+		}
 	}
 	return nil
 }
