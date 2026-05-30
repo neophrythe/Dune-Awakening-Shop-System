@@ -81,22 +81,29 @@ async function req<T>(method: string, path: string, body?: unknown): Promise<T> 
   return (await res.json()) as T
 }
 
+// reqList is like req but guarantees an array result: Go encodes an empty slice
+// as JSON `null`, which would break `.map(...)` in the UI. Coerce null → [].
+async function reqList<T>(method: string, path: string): Promise<T[]> {
+  const v = await req<T[] | null>(method, path)
+  return Array.isArray(v) ? v : []
+}
+
 export const api = {
   session: () => req<{ authenticated: boolean; currency: string }>('GET', '/api/session'),
   login: (user: string, password: string) =>
     req<{ ok: boolean; currency: string }>('POST', '/api/login', { user, password }),
   logout: () => req<{ ok: boolean }>('POST', '/api/logout'),
   stats: () => req<Stats>('GET', '/api/stats'),
-  items: () => req<Item[]>('GET', '/api/items'),
+  items: () => reqList<Item>('GET', '/api/items'),
   upsertItem: (it: Partial<Item>) => req<{ id: number }>('POST', '/api/items', it),
   setItemEnabled: (id: number, enabled: boolean) =>
     req<{ ok: boolean }>('POST', `/api/items/${id}/enabled`, { enabled }),
-  kits: () => req<Kit[]>('GET', '/api/kits'),
+  kits: () => reqList<Kit>('GET', '/api/kits'),
   createKit: (k: Partial<Kit>) => req<{ id: number }>('POST', '/api/kits', k),
   addKitItem: (id: number, it: Partial<KitItem>) =>
     req<{ ok: boolean }>('POST', `/api/kits/${id}/items`, it),
   setKitEnabled: (id: number, enabled: boolean) =>
     req<{ ok: boolean }>('POST', `/api/kits/${id}/enabled`, { enabled }),
-  accounts: () => req<Account[]>('GET', '/api/accounts'),
-  transactions: () => req<Txn[]>('GET', '/api/transactions'),
+  accounts: () => reqList<Account>('GET', '/api/accounts'),
+  transactions: () => reqList<Txn>('GET', '/api/transactions'),
 }
