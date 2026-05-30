@@ -1,0 +1,593 @@
+{
+  "items": [
+    {
+      "category": "Armor & Suits",
+      "game_item_id": "Social_Choam_MaulaCastOffs01_Shoes",
+      "name": "Maula Boots",
+      "price": 100,
+      "quantity": 1
+    },
+    {
+      "category": "Armor & Suits",
+      "game_item_id": "Social_Choam_MaulaCastOffs01_Top_Fremkit",
+      "name": "Maula Vest",
+      "price": 100,
+      "quantity": 1
+    },
+    {
+      "category": "Armor & Suits",
+      "game_item_id": "Social_Choam_MaulaCastOffs01_Top",
+      "name": "Maula Tunic",
+      "price": 100,
+      "quantity": 1
+    },
+    {
+      "category": "Armor & Suits",
+      "game_item_id": "Social_Choam_MaulaCastOffs01_Bottom",
+      "name": "Maula Breeches",
+      "price": 100,
+      "quantity": 1
+    },
+    {
+      "category": "Armor & Suits",
+      "game_item_id": "Social_Choam_MaulaCastOffs01_Gloves",
+      "name": "Maula Bracers",
+      "price": 100,
+      "quantity": 1
+    },
+    {
+      "category": "Armor & Suits",
+      "game_item_id": "Social_Hark_GiediCasual03_Bottom",
+      "name": "Giedi Casual Pants",
+      "price": 1000,
+      "quantity": 1
+    },
+    {
+      "category": "Armor & Suits",
+      "game_item_id": "Social_Hark_GiediCasual03_Boots",
+      "name": "Giedi Casual Shoes",
+      "price": 1000,
+      "quantity": 1
+    },
+    {
+      "category": "Armor & Suits",
+      "game_item_id": "Social_Atre_Casual03_Top",
+      "name": "Caladan Casual Tunic",
+      "price": 1000,
+      "quantity": 1
+    },
+    {
+      "category": "Armor & Suits",
+      "game_item_id": "Social_Atre_Casual03_Shoes",
+      "name": "Caladan Casual Boots",
+      "price": 1000,
+      "quantity": 1
+    },
+    {
+      "category": "Armor & Suits",
+      "game_item_id": "Social_Atre_Casual03_Bottom",
+      "name": "Caladan Casual Trousers",
+      "price": 1000,
+      "quantity": 1
+    },
+    {
+      "category": "Buggy Parts",
+      "game_item_id": "BuggyGenerator_3",
+      "name": "Buggy PSU Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Buggy Parts",
+      "game_item_id": "BuggyBoost_3",
+      "name": "Buggy Booster Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Buggy Parts",
+      "game_item_id": "BuggyBoost_Unique_LessHeat_3",
+      "name": "Rattler Boost Module Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Buggy Parts",
+      "game_item_id": "BuggyChassis_3",
+      "name": "Buggy Chassis Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Buggy Parts",
+      "game_item_id": "BuggyEngine_3",
+      "name": "Buggy Engine Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Buggy Parts",
+      "game_item_id": "BuggyEngine_Unique_Accelerate_03",
+      "name": "Bluddshot Buggy Engine Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Carrier & Sandcrawler",
+      "game_item_id": "TreadwheelBoost_Unique_LessHeat_4_Schematic",
+      "name": "Steady Treadwheel Boost Module Mk4",
+      "price": 10000,
+      "quantity": 1
+    },
+    {
+      "category": "Carrier & Sandcrawler",
+      "game_item_id": "TreadwheelEngine_Unique_Speed_4_Schematic",
+      "name": "Swift Treadwheel Engine Mk4",
+      "price": 10000,
+      "quantity": 1
+    },
+    {
+      "category": "Carrier & Sandcrawler",
+      "game_item_id": "TreadwheelBoost_Unique_LessHeat_5_Schematic",
+      "name": "Steady Treadwheel Boost Module Mk5",
+      "price": 16000,
+      "quantity": 1
+    },
+    {
+      "category": "Carrier & Sandcrawler",
+      "game_item_id": "TreadwheelEngine_Unique_Speed_5_Schematic",
+      "name": "Swift Treadwheel Engine Mk5",
+      "price": 16000,
+      "quantity": 1
+    },
+    {
+      "category": "Carrier & Sandcrawler",
+      "game_item_id": "OrnithopterTransportBoost_Unique_LessHeat_06",
+      "name": "Steady Carrier Boost Module Mk6",
+      "price": 25000,
+      "quantity": 1
+    },
+    {
+      "category": "Carrier & Sandcrawler",
+      "game_item_id": "OrnithopterTransportBoost_6",
+      "name": "Carrier Ornithopter Thruster Mk6",
+      "price": 25000,
+      "quantity": 1
+    },
+    {
+      "category": "Ornithopter Parts",
+      "game_item_id": "OrnithopterMediumLauncher_Unique_LargeExplosion_05_Schematic",
+      "name": "Adept High-payload Rocket Module",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Ornithopter Parts",
+      "game_item_id": "OrnithopterMediumLauncher_Unique_LargeExplosion_06_Schematic",
+      "name": "Regis High-payload Rocket Module",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Ornithopter Parts",
+      "game_item_id": "OrnithopterLightGenerator_4",
+      "name": "Scout Ornithopter Generator Mk4",
+      "price": 10000,
+      "quantity": 1
+    },
+    {
+      "category": "Ornithopter Parts",
+      "game_item_id": "OrnithopterLightEngine_4",
+      "name": "Scout Ornithopter Engine Mk4",
+      "price": 10000,
+      "quantity": 1
+    },
+    {
+      "category": "Ornithopter Parts",
+      "game_item_id": "OrnithopterLightBoost_Unique_LessHeat_4",
+      "name": "Stormrider Boost Module Mk4",
+      "price": 10000,
+      "quantity": 1
+    },
+    {
+      "category": "Ornithopter Parts",
+      "game_item_id": "OrnithopterLightBoost_4",
+      "name": "Scout Ornithopter Thruster Mk4",
+      "price": 10000,
+      "quantity": 1
+    },
+    {
+      "category": "Ornithopter Parts",
+      "game_item_id": "OrnithopterLightChassis_4",
+      "name": "Scout Ornithopter Chassis Mk4",
+      "price": 10000,
+      "quantity": 1
+    },
+    {
+      "category": "Ornithopter Parts",
+      "game_item_id": "OrnithopterLightHullBack_4",
+      "name": "Scout Ornithopter Hull Mk4",
+      "price": 10000,
+      "quantity": 1
+    },
+    {
+      "category": "Sandbike Parts",
+      "game_item_id": "SandbikeEngine_Unique_Speed_3",
+      "name": "Mohandis Sandbike Engine Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Sandbike Parts",
+      "game_item_id": "SandbikeBoost_3",
+      "name": "Sandbike Booster Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Sandbike Parts",
+      "game_item_id": "SandbikeBoost_Unique_LessHeat_3",
+      "name": "Night Rider Sandbike Boost Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Sandbike Parts",
+      "game_item_id": "SandbikeChassis_3",
+      "name": "Sandbike Chassis Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Sandbike Parts",
+      "game_item_id": "SandbikeEngine_3",
+      "name": "Sandbike Engine Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Sandbike Parts",
+      "game_item_id": "SandbikeGenerator_3",
+      "name": "Sandbike PSU Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "SmugShot3",
+      "name": "House Drillshot FK7",
+      "price": 10500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "AtreLMG3",
+      "name": "House Vulcan GAU-92",
+      "price": 11000,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "HarkHeavyPistol4",
+      "name": "Adept Rafiq Snubnose",
+      "price": 14500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "AtreSmg5",
+      "name": "Adept Disruptor M11",
+      "price": 15500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "SmugShot4",
+      "name": "Adept Drillshot FK7",
+      "price": 17500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "SmugDmr5",
+      "name": "Adept JABAL Spitdart",
+      "price": 17500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "Scattergun_Prototype2",
+      "name": "Adept GRDA 44",
+      "price": 17500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "AtreLMG4",
+      "name": "Adept Vulcan GAU-92",
+      "price": 19500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "HarkHeavyPistol5",
+      "name": "Regis Rafiq Snubnose",
+      "price": 22000,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "B1C4_Unique_DualBlades1",
+      "name": "Leechs Maw",
+      "price": 23000,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "AtreSmg6",
+      "name": "Regis Disruptor M11",
+      "price": 24500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "Shotgun_Unique_Explosive_04",
+      "name": "House Burst Drillshot",
+      "price": 28000,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "Scattergun_Prototype3",
+      "name": "Regis GRDA 44",
+      "price": 28500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "SmugShot5",
+      "name": "Regis Drillshot FK7",
+      "price": 28500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "SmugDmr6",
+      "name": "Regis JABAL Spitdart",
+      "price": 28500,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "LMG_Unique_RapidFire_04",
+      "name": "Experimental Vulcan GAU-94",
+      "price": 29000,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "AtreLMG5",
+      "name": "Regis Vulcan GAU-92",
+      "price": 32000,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "UniqueSmg2",
+      "name": "Piter's Disruptor",
+      "price": 41000,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "Shotgun_Unique_Explosive_05",
+      "name": "Adept Burst Drillshot",
+      "price": 43000,
+      "quantity": 1
+    },
+    {
+      "category": "Special Weapons",
+      "game_item_id": "Shotgun_Unique_Explosive_06",
+      "name": "Regis Burst Drillshot",
+      "price": 65000,
+      "quantity": 1
+    },
+    {
+      "category": "Tools & Modules",
+      "game_item_id": "Bloodsack_Unique_Durable_03",
+      "name": "Glutton's Bloodbag",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Tools & Modules",
+      "game_item_id": "Thumper",
+      "name": "Thumper",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Tools & Modules",
+      "game_item_id": "BuggyInventory_3",
+      "name": "Buggy Storage Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Tools & Modules",
+      "game_item_id": "HealthPack_Channeled",
+      "name": "Healkit",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Tools & Modules",
+      "game_item_id": "SpiceAddictionConsumable_02",
+      "name": "Melange Spiced Beer",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Tools & Modules",
+      "game_item_id": "HighCapacityLiterjon_03",
+      "name": "Hajra Literjon Mk3",
+      "price": 5000,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "Kindjal_1",
+      "name": "Artisan Kindjal",
+      "price": 3900,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "Dirk",
+      "name": "Artisan Dirk",
+      "price": 3900,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "CHOAMSword_0",
+      "name": "Artisan Sword",
+      "price": 4200,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "ChoamSda4",
+      "name": "Artisan Maula Pistol",
+      "price": 5700,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "AtreSmg3",
+      "name": "Artisan Disruptor M11",
+      "price": 6000,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "HarkAr4",
+      "name": "Artisan Karpov 38",
+      "price": 6000,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "HarkHeavyPistol2",
+      "name": "Artisan Rafiq Snubnose",
+      "price": 6200,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "SmugDmr3",
+      "name": "Artisan JABAL Spitdart",
+      "price": 6600,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "Scattergun_Prototype0",
+      "name": "Artisan GRDA 44",
+      "price": 6600,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "Dirk_0",
+      "name": "House Dirk",
+      "price": 7900,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "Kindjal_2",
+      "name": "House Kindjal",
+      "price": 7900,
+      "quantity": 1
+    },
+    {
+      "category": "Weapons",
+      "game_item_id": "Rapier",
+      "name": "House Rapier",
+      "price": 9600,
+      "quantity": 1
+    }
+  ],
+  "kits": [
+    {
+      "name": "Sandbike Starter-Set",
+      "price": 12000,
+      "description": "Sandbike Mk3: Motor + Chassis + Booster",
+      "category": "Vehicle Packs",
+      "items": [
+        {
+          "game_item_id": "SandbikeEngine_3",
+          "quantity": 1,
+          "name": "Sandbike Engine Mk3"
+        },
+        {
+          "game_item_id": "SandbikeChassis_3",
+          "quantity": 1,
+          "name": "Sandbike Chassis Mk3"
+        },
+        {
+          "game_item_id": "SandbikeBoost_3",
+          "quantity": 1,
+          "name": "Sandbike Booster Mk3"
+        }
+      ]
+    },
+    {
+      "name": "Buggy Starter-Set",
+      "price": 12000,
+      "description": "Buggy Mk3: Motor + Chassis + Booster",
+      "category": "Vehicle Packs",
+      "items": [
+        {
+          "game_item_id": "BuggyEngine_3",
+          "quantity": 1,
+          "name": "Buggy Engine Mk3"
+        },
+        {
+          "game_item_id": "BuggyChassis_3",
+          "quantity": 1,
+          "name": "Buggy Chassis Mk3"
+        },
+        {
+          "game_item_id": "BuggyBoost_3",
+          "quantity": 1,
+          "name": "Buggy Booster Mk3"
+        }
+      ]
+    },
+    {
+      "name": "Scout Ornithopter-Set",
+      "price": 30000,
+      "description": "Scout Thopter Mk4: Motor + Chassis + Thruster",
+      "category": "Vehicle Packs",
+      "items": [
+        {
+          "game_item_id": "OrnithopterLightEngine_4",
+          "quantity": 1,
+          "name": "Scout Ornithopter Engine Mk4"
+        },
+        {
+          "game_item_id": "OrnithopterLightChassis_4",
+          "quantity": 1,
+          "name": "Scout Ornithopter Chassis Mk4"
+        },
+        {
+          "game_item_id": "OrnithopterLightBoost_4",
+          "quantity": 1,
+          "name": "Scout Ornithopter Thruster Mk4"
+        }
+      ]
+    }
+  ]
+}

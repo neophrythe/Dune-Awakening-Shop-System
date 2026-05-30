@@ -25,6 +25,19 @@ import (
 var Version = "0.1.0-dev"
 
 func main() {
+	// Subcommands run before the server flags are parsed so each can own its
+	// flags: `dune-shop setup`, `dune-shop seed --file ...`.
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "setup":
+			runSetup(os.Args[2:])
+			return
+		case "seed":
+			runSeed(os.Args[2:])
+			return
+		}
+	}
+
 	cfgPath := flag.String("config", "config.yaml", "path to config file")
 	showVersion := flag.Bool("version", false, "print version and exit")
 	flag.Parse()
