@@ -75,7 +75,7 @@ func main() {
 	shopSvc := shop.New(st, deliverer)
 
 	if cfg.Discord.Token != "" {
-		bot, err := discord.New(cfg.Discord, st, shopSvc, cfg.Economy.CurrencyName)
+		bot, err := discord.New(cfg.Discord, st, shopSvc, cfg.Economy.CurrencyName, cfg.Game.CharacterLookupQuery)
 		if err != nil {
 			log.Fatalf("discord: %v", err)
 		}

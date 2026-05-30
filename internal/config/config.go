@@ -18,6 +18,16 @@ type Config struct {
 	Discord    DiscordConfig  `yaml:"discord"`
 	Economy    EconomyConfig  `yaml:"economy"`
 	Delivery   DeliveryConfig `yaml:"delivery"`
+	Game       GameConfig     `yaml:"game"`
+}
+
+// GameConfig holds deployment-specific queries against the game database.
+type GameConfig struct {
+	// CharacterLookupQuery resolves a character name to its game account id so
+	// players can /link with just their character name (no account id needed).
+	// It must take the character name as $1 and return one text column (the
+	// account id). Deployment-specific; empty disables name-only linking.
+	CharacterLookupQuery string `yaml:"character_lookup_query"`
 }
 
 // DatabaseConfig points at the Dune game Postgres database.

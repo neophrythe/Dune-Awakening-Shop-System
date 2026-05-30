@@ -16,12 +16,13 @@ type handlerFunc func(ctx context.Context, i *discordgo.InteractionCreate) error
 
 func (b *Bot) handlers() map[string]handlerFunc {
 	return map[string]handlerFunc{
-		"link":    b.handleLink,
-		"balance": b.handleBalance,
-		"shop":    b.handleShop,
-		"buy":     b.handleBuy,
-		"grant":   b.adminOnly(b.handleGrant),
-		"additem": b.adminOnly(b.handleAddItem),
+		"link":      b.handleLink,
+		"howtolink": b.handleHowToLink,
+		"balance":   b.handleBalance,
+		"shop":      b.handleShop,
+		"buy":       b.handleBuy,
+		"grant":     b.adminOnly(b.handleGrant),
+		"additem":   b.adminOnly(b.handleAddItem),
 	}
 }
 
@@ -59,14 +60,70 @@ func (b *Bot) adminOnly(h handlerFunc) handlerFunc {
 	}
 }
 
+func (b *Bot) handleHowToLink(_ context.Context, i *discordgo.InteractionCreate) error {
+	var steps string
+	if b.nameOnlyLinking() {
+		steps = "**1.** Log in to the server at least once with your character.\n" +
+			"**2.** In Discord, run `/link character:<name>`.\n" +
+			"**3.** Type your character name **exactly** as it appears in-game " +
+			"(capital letters matter — `Muad'Dib` is not `muad'dib`).\n\n" +
+			"That's it — you don't need any ID. The bot finds your account from your character name."
+	} else {
+		steps = "**1.** Log in to the server at least once with your character.\n" +
+			"**2.** In Discord, run `/link character:<name> account_id:<id>`.\n" +
+			"**3.** Type your character name **exactly** as in-game (capitals matter).\n" +
+			"**4.** For `account_id`, use the account/FLS id shown by your server admin " +
+			"(ask in the support channel if you're not sure)."
+	}
+	b.respondEmbed(i, &discordgo.MessageEmbed{
+		Title:       "🔗 How to link your account",
+		Description: steps,
+		Color:       0xC97B3C,
+		Fields: []*discordgo.MessageEmbedField{
+			{Name: "What is a “character”?", Value: "The in-game name of the survivor you play on this server.", Inline: false},
+			{Name: "What is an “account id”?", Value: "A code that identifies your game account. Most players never need it — leave it blank.", Inline: false},
+			{Name: "Already linked?", Value: "Running `/link` again just updates your link — no harm done.", Inline: false},
+		},
+		Footer: &discordgo.MessageEmbedFooter{Text: "Then try /balance and /shop"},
+	})
+	return nil
+}
+
 func (b *Bot) handleLink(ctx context.Context, i *discordgo.InteractionCreate) error {
 	o := optMap(i)
-	la, err := b.store.LinkAccount(ctx, callerID(i),
-		o["account_id"].StringValue(), o["character"].StringValue())
+	character := strings.TrimSpace(o["character"].StringValue())
+	accountID := ""
+	if v, ok := o["account_id"]; ok {
+		accountID = strings.TrimSpace(v.StringValue())
+	}
+
+	// Resolve the account id from the character name when the player didn't
+	// supply one and name-only linking is available.
+	if accountID == "" {
+		if !b.nameOnlyLinking() {
+			b.respondEphemeral(i, "I need your account id too. Run **/howtolink** to see how to find it, "+
+				"then use `/link character:<name> account_id:<id>`.")
+			return nil
+		}
+		resolved, err := b.store.GameAccountByCharacter(ctx, b.charLookup, character)
+		if errors.Is(err, store.ErrNotFound) {
+			b.respondEphemeral(i, fmt.Sprintf("I couldn't find a character named **%s** on the server. "+
+				"Make sure you've logged in at least once and typed the name **exactly** as in-game "+
+				"(capital letters matter). Need help? Run **/howtolink**.", character))
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		accountID = resolved
+	}
+
+	la, err := b.store.LinkAccount(ctx, callerID(i), accountID, character)
 	if err != nil {
 		return err
 	}
-	b.respondEphemeral(i, fmt.Sprintf("✅ Linked to **%s** (account `%s`).", la.CharacterName, la.GameAccountID))
+	b.respondEphemeral(i, fmt.Sprintf("✅ All set! Your Discord is now linked to **%s**.\n"+
+		"Try `/balance` to see your %s, then `/shop` to spend it.", la.CharacterName, b.currency))
 	return nil
 }
 
