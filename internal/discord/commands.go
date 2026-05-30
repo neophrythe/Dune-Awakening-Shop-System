@@ -24,6 +24,7 @@ func commandDefs() []*discordgo.ApplicationCommand {
 			},
 		},
 		{Name: "kits", Description: "Browse item packs/kits (bundles of items)"},
+		{Name: "buyspice", Description: "Support the server & get Spice (donation)"},
 		{
 			Name:        "buykit",
 			Description: "Buy a kit/pack — delivers all its items at once",
