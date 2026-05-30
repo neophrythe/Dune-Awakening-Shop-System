@@ -18,6 +18,7 @@ import (
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/economy"
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/shop"
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/store"
+	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/web"
 )
 
 // Version is the build version, overridable at release time via -ldflags.
@@ -118,7 +119,19 @@ func main() {
 		defer func() { _ = srv.Close() }()
 	}
 
-	// TODO(later): admin web panel (internal/web).
+	if cfg.Web.Enabled {
+		dash := web.New(cfg.Web, st, cfg.Economy.CurrencyName)
+		addr := cfg.Web.ListenAddr
+		if addr == "" {
+			addr = "0.0.0.0:8091"
+		}
+		go func() {
+			log.Printf("admin dashboard listening on %s", addr)
+			if err := dash.ListenAndServe(ctx, addr, false); err != nil {
+				log.Printf("dashboard: %v", err)
+			}
+		}()
+	}
 
 	<-ctx.Done()
 	log.Printf("shutting down")
