@@ -206,7 +206,6 @@ proxy if it is exposed to the internet.
 - [x] Kits / packs (multi-item bundles)
 - [x] Web admin dashboard (React SPA, login-protected)
 - [ ] First-class Stripe & PayPal signature verification
-- [ ] Item bundles / kits
 
 ---
 
