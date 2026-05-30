@@ -103,10 +103,21 @@ type VotesConfig struct {
 // RealMoneyConfig enables buying currency packs with real money.
 type RealMoneyConfig struct {
 	Enabled       bool   `yaml:"enabled"`
-	Provider      string `yaml:"provider"` // stripe | paypal
+	Provider      string `yaml:"provider"` // stripe | paypal | manual
 	PublicKey     string `yaml:"public_key"`
 	SecretKey     string `yaml:"secret_key"`
 	WebhookSecret string `yaml:"webhook_secret"` // shared secret for /webhook/payment
+
+	// Manual (admin-confirmed) donation flow shown by the /buyspice command.
+	PaymentLink  string         `yaml:"payment_link"`  // e.g. https://paypal.me/yourname
+	DonationNote string         `yaml:"donation_note"` // optional extra line for players
+	Packages     []SpicePackage `yaml:"packages"`
+}
+
+// SpicePackage is one real-money donation tier that grants shop currency.
+type SpicePackage struct {
+	PriceLabel string `yaml:"price_label"` // shown as-is, e.g. "5 €"
+	Amount     int64  `yaml:"amount"`      // currency credited
 }
 
 // DeliveryConfig configures in-game item delivery.

@@ -22,7 +22,11 @@ type Bot struct {
 	shop       *shop.Service
 	currency   string
 	charLookup string // game-DB query resolving character name -> account id
+	realMoney  config.RealMoneyConfig
 }
+
+// SetRealMoney configures the manual spice-donation flow shown by /buyspice.
+func (b *Bot) SetRealMoney(rm config.RealMoneyConfig) { b.realMoney = rm }
 
 // New creates the bot. Call Start to connect and register commands. When
 // charLookupQuery is non-empty, players can link with just their character name

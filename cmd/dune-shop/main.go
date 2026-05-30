@@ -80,6 +80,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("discord: %v", err)
 		}
+		bot.SetRealMoney(cfg.Economy.RealMoney)
 		if err := bot.Start(); err != nil {
 			log.Fatalf("discord start: %v", err)
 		}
