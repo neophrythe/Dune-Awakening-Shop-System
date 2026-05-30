@@ -12,6 +12,8 @@ import (
 
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/config"
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/delivery"
+	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/discord"
+	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/shop"
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/store"
 )
 
@@ -67,9 +69,22 @@ func main() {
 	}
 	log.Printf("delivery engine: %s", deliverer.Name())
 
-	// TODO(milestones): wire store+deliverer into shop checkout, start economy
-	// worker, Discord bot and web panel.
-	_ = deliverer
+	shopSvc := shop.New(st, deliverer)
+
+	if cfg.Discord.Token != "" {
+		bot, err := discord.New(cfg.Discord, st, shopSvc, cfg.Economy.CurrencyName)
+		if err != nil {
+			log.Fatalf("discord: %v", err)
+		}
+		if err := bot.Start(); err != nil {
+			log.Fatalf("discord start: %v", err)
+		}
+		defer bot.Stop()
+	} else {
+		log.Printf("discord token not set — bot disabled")
+	}
+
+	// TODO(milestones): start economy worker (playtime/votes/realmoney) and web panel.
 
 	<-ctx.Done()
 	log.Printf("shutting down")

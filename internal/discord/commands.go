@@ -1,0 +1,54 @@
+package discord
+
+import "github.com/bwmarrin/discordgo"
+
+func commandDefs() []*discordgo.ApplicationCommand {
+	minOne := float64(1)
+	return []*discordgo.ApplicationCommand{
+		{
+			Name:        "link",
+			Description: "Link your Discord to your in-game Dune account",
+			Options: []*discordgo.ApplicationCommandOption{
+				{Type: discordgo.ApplicationCommandOptionString, Name: "account_id", Description: "Your in-game account id", Required: true},
+				{Type: discordgo.ApplicationCommandOptionString, Name: "character", Description: "Your character name", Required: true},
+			},
+		},
+		{Name: "balance", Description: "Show your shop balance"},
+		{Name: "shop", Description: "Browse the shop"},
+		{
+			Name:        "buy",
+			Description: "Buy an item from the shop",
+			Options: []*discordgo.ApplicationCommandOption{
+				{Type: discordgo.ApplicationCommandOptionInteger, Name: "item_id", Description: "Item id (see /shop)", Required: true, MinValue: &minOne},
+			},
+		},
+		{
+			Name:        "grant",
+			Description: "(admin) Grant currency to a user",
+			Options: []*discordgo.ApplicationCommandOption{
+				{Type: discordgo.ApplicationCommandOptionUser, Name: "user", Description: "Target user", Required: true},
+				{Type: discordgo.ApplicationCommandOptionInteger, Name: "amount", Description: "Amount to grant", Required: true, MinValue: &minOne},
+			},
+		},
+		{
+			Name:        "additem",
+			Description: "(admin) Add or update a shop item",
+			Options: []*discordgo.ApplicationCommandOption{
+				{Type: discordgo.ApplicationCommandOptionString, Name: "game_item_id", Description: "In-game item id", Required: true},
+				{Type: discordgo.ApplicationCommandOptionString, Name: "name", Description: "Display name", Required: true},
+				{Type: discordgo.ApplicationCommandOptionInteger, Name: "price", Description: "Price", Required: true, MinValue: &minOne},
+				{Type: discordgo.ApplicationCommandOptionString, Name: "category", Description: "Category (optional)"},
+				{Type: discordgo.ApplicationCommandOptionInteger, Name: "quantity", Description: "Amount delivered per purchase (default 1)", MinValue: &minOne},
+			},
+		},
+	}
+}
+
+// registerCommands installs the slash commands. When a guild id is configured
+// they are registered guild-scoped (instant); otherwise globally (slower to
+// propagate).
+func (b *Bot) registerCommands() error {
+	appID := b.session.State.User.ID
+	_, err := b.session.ApplicationCommandBulkOverwrite(appID, b.cfg.GuildID, commandDefs())
+	return err
+}
