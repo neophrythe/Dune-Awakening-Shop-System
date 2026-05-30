@@ -21,11 +21,29 @@ discord:
   guild_id: ""           # your Discord server id (for fast slash-command registration)
   admin_role_id: ""      # role allowed to run admin commands
 
-# Economy — playtime rewards
+# Economy — how players earn/buy currency
 economy:
   currency_name: "Solari"
-  per_minute: 1          # currency granted per minute online
-  accrual_interval: "60s"
+
+  # Playtime rewards
+  playtime:
+    enabled: true
+    per_minute: 1          # currency granted per minute online
+    accrual_interval: "60s"
+
+  # Vote rewards (server-list sites)
+  votes:
+    enabled: false
+    reward: 100            # currency per confirmed vote
+    # sites: configured per provider once vote webhooks are implemented
+
+  # Real-money top-ups (currency packs)
+  realmoney:
+    enabled: false
+    provider: "stripe"     # stripe | paypal
+    public_key: ""
+    secret_key: ""         # prefer DUNE_SHOP_PAYMENT_SECRET env var
+    # packs: list of {price_cents, currency_amount} once payments are implemented
 
 # In-game delivery (ported from dune-admin's AMP/FLS path)
 delivery:

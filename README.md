@@ -24,7 +24,10 @@ The result is a single self-hostable binary: **Dune Awakening Shop**.
 
 ## Features (planned)
 
-- 🪙 **Playtime economy** — players earn currency per minute online on the server
+- 🪙 **Economy** — players earn currency three ways:
+  - ⏱️ **playtime** — currency per minute online on the server
+  - 🗳️ **vote rewards** — currency for voting on server-list sites
+  - 💳 **real-money top-ups** — buy currency packs (Stripe / PayPal) to support the server
 - 🛒 **Shop** — item catalogue with prices, stock limits and categories
 - 💬 **Discord bot** — `/shop`, `/balance`, `/buy`, `/link` slash commands
 - 🔗 **Account linking** — connect a Discord user to their in-game character
@@ -43,4 +46,8 @@ go build ./cmd/dune-shop
 
 ## License
 
-[MIT](LICENSE) © 2026 neophrythe
+[AGPL-3.0](LICENSE) © 2026 neophrythe
+
+This project is derived in part from the AGPL-3.0 licensed
+[Conan-Shop](https://github.com/irrelevantgamers/Conan-Shop); the Discord/economy
+flow is reimplemented in Go for Dune: Awakening.
