@@ -17,6 +17,7 @@ import (
 var (
 	ErrNotLinked      = errors.New("account not linked")
 	ErrDeliveryFailed = errors.New("delivery failed")
+	ErrNoSpace        = errors.New("not enough inventory space")
 )
 
 // Purchaser is the subset of *store.Store the shop needs. Defined as an
@@ -28,6 +29,22 @@ type Purchaser interface {
 	SetDeliveryStatus(ctx context.Context, txnID int64, status store.DeliveryStatus) error
 	Refund(ctx context.Context, accountID, amount int64, note string) (int64, error)
 	Balance(ctx context.Context, accountID int64) (int64, error)
+	BackpackSpaceByGameAccount(ctx context.Context, gameAccountHex string) (*store.BackpackSpace, error)
+}
+
+// ensureSpace checks the player's backpack has room for needSlots new stacks.
+// If the inventory can't be located (player never spawned) it allows the
+// purchase — the delivery itself is then the backstop. A read error also does
+// not block a sale.
+func (svc *Service) ensureSpace(ctx context.Context, link *store.LinkedAccount, needSlots int) error {
+	sp, err := svc.store.BackpackSpaceByGameAccount(ctx, link.GameAccountID)
+	if err != nil {
+		return nil
+	}
+	if !sp.HasRoom(needSlots) {
+		return fmt.Errorf("%w: %d free slot(s), need %d", ErrNoSpace, sp.FreeSlots, needSlots)
+	}
+	return nil
 }
 
 // Service runs purchases against a store and a delivery engine.
@@ -61,6 +78,12 @@ func (svc *Service) Buy(ctx context.Context, discordUserID string, itemID int64)
 		return nil, ErrNotLinked
 	}
 	if err != nil {
+		return nil, err
+	}
+
+	// Reject early if the backpack is full, so the player never pays for an
+	// item that can't be delivered. One item = one stack slot.
+	if err := svc.ensureSpace(ctx, link, 1); err != nil {
 		return nil, err
 	}
 
@@ -104,6 +127,14 @@ func (svc *Service) BuyKit(ctx context.Context, discordUserID string, kitID int6
 	txn, kit, err := svc.store.PurchaseKit(ctx, link.ID, kitID)
 	if err != nil {
 		return nil, err
+	}
+
+	// One free slot per distinct item line. If too full, refund and abort
+	// before delivering anything.
+	if serr := svc.ensureSpace(ctx, link, len(kit.Items)); serr != nil {
+		_ = svc.store.SetDeliveryStatus(ctx, txn.ID, store.DeliveryFailed)
+		_, _ = svc.store.Refund(ctx, link.ID, kit.Price, "refund: not enough inventory space")
+		return nil, serr
 	}
 
 	for _, it := range kit.Items {

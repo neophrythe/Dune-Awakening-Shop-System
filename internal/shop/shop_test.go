@@ -39,6 +39,10 @@ func (f *fakeStore) Refund(_ context.Context, _ int64, amount int64, _ string) (
 	return 0, nil
 }
 func (f *fakeStore) Balance(context.Context, int64) (int64, error) { return f.balance, nil }
+func (f *fakeStore) BackpackSpaceByGameAccount(context.Context, string) (*store.BackpackSpace, error) {
+	// default: plenty of room (tests focus on purchase/delivery, not space)
+	return &store.BackpackSpace{MaxSlots: 40, UsedSlots: 0, FreeSlots: 40}, nil
+}
 
 type fakeDeliver struct {
 	err    error
