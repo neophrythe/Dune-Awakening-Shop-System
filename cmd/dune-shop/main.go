@@ -11,6 +11,7 @@ import (
 	"syscall"
 
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/config"
+	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/store"
 )
 
 // Version is the build version, overridable at release time via -ldflags.
@@ -41,8 +42,17 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	// TODO(milestones): connect store, start economy worker, Discord bot, web panel.
-	log.Printf("scaffold ready — components not yet wired (see docs/ARCHITECTURE.md)")
+	st, err := store.New(ctx, cfg.Database.DSN())
+	if err != nil {
+		log.Fatalf("store: %v", err)
+	}
+	defer st.Close()
+	if err := st.Migrate(ctx); err != nil {
+		log.Fatalf("migrate: %v", err)
+	}
+	log.Printf("store connected and migrated")
+
+	// TODO(milestones): start economy worker, delivery engine, Discord bot, web panel.
 
 	<-ctx.Done()
 	log.Printf("shutting down")
