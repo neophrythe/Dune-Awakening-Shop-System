@@ -86,8 +86,13 @@ type RealMoneyConfig struct {
 
 // DeliveryConfig configures in-game item delivery.
 type DeliveryConfig struct {
-	AMPContainer string `yaml:"amp_container"`
-	FLSToken     string `yaml:"fls_token"`
+	Mode           string `yaml:"mode"` // fls | rmq | both
+	AMPContainer   string `yaml:"amp_container"`
+	FLSToken       string `yaml:"fls_token"`
+	PlayFabTitleID string `yaml:"playfab_title_id"`
+	MQRoot         string `yaml:"mq_root"`
+	MQHome         string `yaml:"mq_home"`
+	MQNode         string `yaml:"mq_node"`
 }
 
 // Load reads YAML config from path and applies env overrides for secrets.
