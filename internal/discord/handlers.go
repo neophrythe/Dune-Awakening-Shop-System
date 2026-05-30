@@ -22,6 +22,7 @@ func (b *Bot) handlers() map[string]handlerFunc {
 		"shop":       b.handleShop,
 		"buy":        b.handleBuy,
 		"kits":       b.handleKits,
+		"buyspice":   b.handleBuySpice,
 		"buykit":     b.handleBuyKit,
 		"grant":      b.adminOnly(b.handleGrant),
 		"additem":    b.adminOnly(b.handleAddItem),
