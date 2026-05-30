@@ -76,7 +76,7 @@ Players shouldn't need to hunt for a cryptic ID. When you set a
 `game.character_lookup_query` in the config, linking is as simple as:
 
 ```
-/link character:Muad'Dib
+/link name:Muad'Dib
 ```
 
 The bot resolves the in-game account from the **character name** automatically —

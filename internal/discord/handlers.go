@@ -107,7 +107,7 @@ func (b *Bot) handleLink(ctx context.Context, i *discordgo.InteractionCreate) er
 	if accountID == "" {
 		if !b.nameOnlyLinking() {
 			b.respondEphemeral(i, "I need your account id too. Run **/howtolink** to see how to find it, "+
-				"then use `/link character:<name> account_id:<id>`.")
+				"then use `/link name:<your character> account_id:<id>`.")
 			return nil
 		}
 		resolved, err := b.store.GameAccountByCharacter(ctx, b.charLookup, character)
