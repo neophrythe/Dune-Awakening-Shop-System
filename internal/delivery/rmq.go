@@ -54,23 +54,27 @@ func orDefault(v, def string) string {
 	return v
 }
 
-// Deliver publishes a SpawnItem server command for the player.
+// Deliver publishes an AddItemToInventory server command for the player. This
+// is the mechanism dune-admin uses for instant, no-relog delivery to ONLINE
+// players. PlayerId must be the player's Funcom hex id (dune.accounts."user"),
+// carried in Request.PlayFabID; ItemName is the short game template id.
 func (e *RMQEngine) Deliver(ctx context.Context, r Request) error {
 	if e.Container == "" {
 		return fmt.Errorf("rmq deliver: no container configured")
 	}
-	if r.PlayerName == "" || r.AssetItemID == "" {
-		return fmt.Errorf("rmq deliver: missing player name or item id")
+	if r.PlayFabID == "" || r.AssetItemID == "" {
+		return fmt.Errorf("rmq deliver: missing player id or item id")
 	}
 	count := r.Count
 	if count < 1 {
 		count = 1
 	}
 	envB64, err := buildEnvelope(map[string]any{
-		"Command":    "SpawnItem",
-		"PlayerName": r.PlayerName,
-		"ItemId":     r.AssetItemID,
-		"Count":      count,
+		"ServerCommand": "AddItemToInventory",
+		"PlayerId":      r.PlayFabID,
+		"ItemName":      r.AssetItemID,
+		"Quantity":      count,
+		"Durability":    1.0,
 	})
 	if err != nil {
 		return err

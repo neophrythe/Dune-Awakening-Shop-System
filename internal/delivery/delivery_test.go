@@ -12,7 +12,7 @@ import (
 )
 
 func TestBuildEnvelope(t *testing.T) {
-	b64, err := buildEnvelope(map[string]any{"Command": "SpawnItem", "Count": 2})
+	b64, err := buildEnvelope(map[string]any{"ServerCommand": "AddItemToInventory", "Quantity": 2})
 	if err != nil {
 		t.Fatalf("buildEnvelope: %v", err)
 	}
@@ -35,8 +35,8 @@ func TestBuildEnvelope(t *testing.T) {
 	if err := json.Unmarshal([]byte(env.MessageContent), &inner); err != nil {
 		t.Fatalf("unmarshal inner: %v", err)
 	}
-	if inner["Command"] != "SpawnItem" {
-		t.Fatalf("inner command = %v", inner["Command"])
+	if inner["ServerCommand"] != "AddItemToInventory" {
+		t.Fatalf("inner command = %v", inner["ServerCommand"])
 	}
 }
 
@@ -54,7 +54,7 @@ func TestRMQEngineDeliver(t *testing.T) {
 	fe := &fakeExecer{}
 	e := &RMQEngine{Container: "AMP_X", Exec: fe, NowMilli: func() int64 { return 123 }}
 	if err := e.Deliver(context.Background(),
-		Request{PlayerName: "Paul", AssetItemID: "Item_Water", Count: 3}); err != nil {
+		Request{PlayFabID: "A93638E049FBE2D9", AssetItemID: "Ammo", Count: 3}); err != nil {
 		t.Fatalf("deliver: %v", err)
 	}
 	if fe.name != "docker" || len(fe.args) != 5 {
@@ -71,7 +71,8 @@ func TestRMQEngineDeliver(t *testing.T) {
 		t.Fatalf("missing message id: %s", inner)
 	}
 	wantEnv, _ := buildEnvelope(map[string]any{
-		"Command": "SpawnItem", "PlayerName": "Paul", "ItemId": "Item_Water", "Count": 3,
+		"ServerCommand": "AddItemToInventory", "PlayerId": "A93638E049FBE2D9",
+		"ItemName": "Ammo", "Quantity": 3, "Durability": 1.0,
 	})
 	if !strings.Contains(inner, wantEnv) {
 		t.Fatalf("missing expected envelope base64 in command")
@@ -80,12 +81,12 @@ func TestRMQEngineDeliver(t *testing.T) {
 
 func TestRMQEngineValidation(t *testing.T) {
 	e := &RMQEngine{Exec: &fakeExecer{}}
-	if err := e.Deliver(context.Background(), Request{PlayerName: "x", AssetItemID: "y"}); err == nil {
+	if err := e.Deliver(context.Background(), Request{PlayFabID: "x", AssetItemID: "y"}); err == nil {
 		t.Fatal("expected error for missing container")
 	}
 	e.Container = "AMP_X"
 	if err := e.Deliver(context.Background(), Request{AssetItemID: "y"}); err == nil {
-		t.Fatal("expected error for missing player name")
+		t.Fatal("expected error for missing player id")
 	}
 }
 
