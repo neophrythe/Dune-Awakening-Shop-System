@@ -11,6 +11,7 @@ import (
 	"syscall"
 
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/config"
+	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/delivery"
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/store"
 )
 
@@ -52,7 +53,23 @@ func main() {
 	}
 	log.Printf("store connected and migrated")
 
-	// TODO(milestones): start economy worker, delivery engine, Discord bot, web panel.
+	deliverer, err := delivery.New(delivery.Options{
+		Mode:           cfg.Delivery.Mode,
+		Container:      cfg.Delivery.AMPContainer,
+		MQRoot:         cfg.Delivery.MQRoot,
+		MQHome:         cfg.Delivery.MQHome,
+		Node:           cfg.Delivery.MQNode,
+		FLSToken:       cfg.Delivery.FLSToken,
+		PlayFabTitleID: cfg.Delivery.PlayFabTitleID,
+	})
+	if err != nil {
+		log.Fatalf("delivery: %v", err)
+	}
+	log.Printf("delivery engine: %s", deliverer.Name())
+
+	// TODO(milestones): wire store+deliverer into shop checkout, start economy
+	// worker, Discord bot and web panel.
+	_ = deliverer
 
 	<-ctx.Done()
 	log.Printf("shutting down")

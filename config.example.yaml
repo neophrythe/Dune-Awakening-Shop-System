@@ -47,5 +47,14 @@ economy:
 
 # In-game delivery (ported from dune-admin's AMP/FLS path)
 delivery:
+  mode: "both"             # fls | rmq | both (both = FLS first, RMQ fallback)
+
+  # FLS / PlayFab grant (account-level, works offline)
+  fls_token: ""            # ServiceAuthToken; prefer DUNE_SHOP_FLS_TOKEN env var
+  playfab_title_id: ""     # PlayFab title id
+
+  # RMQ SpawnItem (live, player must be online) — runs inside the AMP container
   amp_container: "AMP_BuGIsland01"
-  fls_token: ""          # prefer DUNE_SHOP_FLS_TOKEN env var
+  mq_root: "/AMP/duneawakening/extracted/mq"
+  mq_home: "/AMP/duneawakening/runtime/mq-game-home"
+  mq_node: "rabbit-game@localhost"
