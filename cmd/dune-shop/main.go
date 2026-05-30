@@ -6,13 +6,16 @@ import (
 	"context"
 	"flag"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/config"
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/delivery"
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/discord"
+	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/economy"
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/shop"
 	"github.com/neophrythe/Dune-Awakening-Shop-System/internal/store"
 )
@@ -84,7 +87,38 @@ func main() {
 		log.Printf("discord token not set — bot disabled")
 	}
 
-	// TODO(milestones): start economy worker (playtime/votes/realmoney) and web panel.
+	if cfg.Economy.Playtime.Enabled {
+		worker := &economy.AccrualWorker{
+			Store:    st,
+			Source:   economy.NewDBSource(st, cfg.Economy.Playtime.OnlineQuery),
+			Amount:   cfg.Economy.Playtime.PerMinute,
+			Interval: cfg.Economy.Playtime.AccrualDuration(),
+			Currency: cfg.Economy.CurrencyName,
+		}
+		go worker.Run(ctx)
+	}
+
+	if cfg.Economy.Votes.Enabled || cfg.Economy.RealMoney.Enabled {
+		hooks := &economy.WebhookServer{
+			Store:        st,
+			Currency:     cfg.Economy.CurrencyName,
+			VotesEnabled: cfg.Economy.Votes.Enabled,
+			VoteSecret:   cfg.Economy.Votes.Secret,
+			VoteReward:   cfg.Economy.Votes.Reward,
+			PayEnabled:   cfg.Economy.RealMoney.Enabled,
+			PaySecret:    cfg.Economy.RealMoney.WebhookSecret,
+		}
+		srv := &http.Server{Addr: cfg.ListenAddr, Handler: hooks.Handler(), ReadHeaderTimeout: 5 * time.Second}
+		go func() {
+			log.Printf("economy webhooks listening on %s", cfg.ListenAddr)
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Printf("webhook server: %v", err)
+			}
+		}()
+		defer func() { _ = srv.Close() }()
+	}
+
+	// TODO(later): admin web panel (internal/web).
 
 	<-ctx.Done()
 	log.Printf("shutting down")

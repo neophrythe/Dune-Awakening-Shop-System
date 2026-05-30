@@ -56,6 +56,9 @@ type PlaytimeConfig struct {
 	Enabled         bool   `yaml:"enabled"`
 	PerMinute       int64  `yaml:"per_minute"`
 	AccrualInterval string `yaml:"accrual_interval"` // Go duration string, e.g. "60s"
+	// OnlineQuery returns one text column of online players' game account ids.
+	// Deployment-specific (the game presence table varies); empty = disabled.
+	OnlineQuery string `yaml:"online_query"`
 }
 
 // AccrualDuration parses AccrualInterval, falling back to one minute.
@@ -72,16 +75,18 @@ func (p PlaytimeConfig) AccrualDuration() time.Duration {
 
 // VotesConfig rewards players for voting on server-list sites.
 type VotesConfig struct {
-	Enabled bool  `yaml:"enabled"`
-	Reward  int64 `yaml:"reward"`
+	Enabled bool   `yaml:"enabled"`
+	Reward  int64  `yaml:"reward"`
+	Secret  string `yaml:"secret"` // shared secret for the /webhook/vote endpoint
 }
 
 // RealMoneyConfig enables buying currency packs with real money.
 type RealMoneyConfig struct {
-	Enabled   bool   `yaml:"enabled"`
-	Provider  string `yaml:"provider"` // stripe | paypal
-	PublicKey string `yaml:"public_key"`
-	SecretKey string `yaml:"secret_key"`
+	Enabled       bool   `yaml:"enabled"`
+	Provider      string `yaml:"provider"` // stripe | paypal
+	PublicKey     string `yaml:"public_key"`
+	SecretKey     string `yaml:"secret_key"`
+	WebhookSecret string `yaml:"webhook_secret"` // shared secret for /webhook/payment
 }
 
 // DeliveryConfig configures in-game item delivery.

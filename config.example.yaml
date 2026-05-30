@@ -25,25 +25,28 @@ discord:
 economy:
   currency_name: "Solari"
 
-  # Playtime rewards
+  # Playtime rewards — credits online players each interval
   playtime:
     enabled: true
-    per_minute: 1          # currency granted per minute online
+    per_minute: 1            # currency granted per accrual tick
     accrual_interval: "60s"
+    # SQL returning one column of online players' game account ids.
+    # Deployment-specific; leave empty to disable accrual until you set it.
+    online_query: ""
 
-  # Vote rewards (server-list sites)
+  # Vote rewards — POST /webhook/vote  (header X-Webhook-Secret)
   votes:
     enabled: false
-    reward: 100            # currency per confirmed vote
-    # sites: configured per provider once vote webhooks are implemented
+    reward: 100              # currency per confirmed vote
+    secret: ""               # shared secret your vote provider must send
 
-  # Real-money top-ups (currency packs)
+  # Real-money top-ups — POST /webhook/payment  (header X-Webhook-Secret)
   realmoney:
     enabled: false
-    provider: "stripe"     # stripe | paypal
+    provider: "stripe"       # stripe | paypal
     public_key: ""
-    secret_key: ""         # prefer DUNE_SHOP_PAYMENT_SECRET env var
-    # packs: list of {price_cents, currency_amount} once payments are implemented
+    secret_key: ""           # prefer DUNE_SHOP_PAYMENT_SECRET env var
+    webhook_secret: ""       # shared secret for the payment webhook
 
 # In-game delivery (ported from dune-admin's AMP/FLS path)
 delivery:
