@@ -35,6 +35,28 @@ type CatalogItem struct {
 	Enabled     bool
 }
 
+// Kit is a priced bundle that delivers several in-game items in one purchase
+// (like the admin tools' "give packs"). Its contents live in []KitItem.
+type Kit struct {
+	ID          int64
+	Name        string
+	Description string
+	Category    string
+	Price       int64
+	Stock       *int // nil = unlimited
+	Enabled     bool
+	Items       []KitItem
+}
+
+// KitItem is one in-game item contained in a Kit.
+type KitItem struct {
+	ID         int64
+	KitID      int64
+	GameItemID string
+	Name       string
+	Quantity   int
+}
+
 // TxnKind enumerates ledger entry types.
 type TxnKind string
 
@@ -61,7 +83,8 @@ type Transaction struct {
 	LinkedAccountID int64
 	Kind            TxnKind
 	Amount          int64
-	CatalogItemID   *int64 // set for purchases
+	CatalogItemID   *int64 // set for single-item purchases
+	KitID           *int64 // set for kit purchases
 	Delivery        DeliveryStatus
 	Note            string
 	CreatedAt       time.Time

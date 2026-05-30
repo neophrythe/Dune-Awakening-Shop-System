@@ -14,6 +14,7 @@ type fakeStore struct {
 	linkErr     error
 	txn         *store.Transaction
 	item        *store.CatalogItem
+	kit         *store.Kit
 	purchaseErr error
 	statusSet   store.DeliveryStatus
 	refunded    int64
@@ -25,6 +26,9 @@ func (f *fakeStore) LinkByDiscord(context.Context, string) (*store.LinkedAccount
 }
 func (f *fakeStore) Purchase(context.Context, int64, int64) (*store.Transaction, *store.CatalogItem, error) {
 	return f.txn, f.item, f.purchaseErr
+}
+func (f *fakeStore) PurchaseKit(context.Context, int64, int64) (*store.Transaction, *store.Kit, error) {
+	return f.txn, f.kit, f.purchaseErr
 }
 func (f *fakeStore) SetDeliveryStatus(_ context.Context, _ int64, s store.DeliveryStatus) error {
 	f.statusSet = s
@@ -45,6 +49,14 @@ func (f *fakeDeliver) Name() string { return "fake" }
 func (f *fakeDeliver) Deliver(context.Context, delivery.Request) error {
 	f.called = true
 	return f.err
+}
+
+type countingDeliver struct{ calls int }
+
+func (c *countingDeliver) Name() string { return "counting" }
+func (c *countingDeliver) Deliver(context.Context, delivery.Request) error {
+	c.calls++
+	return nil
 }
 
 func baseStore() *fakeStore {
@@ -90,6 +102,46 @@ func TestBuyInsufficientFunds(t *testing.T) {
 	fs.txn, fs.item, fs.purchaseErr = nil, nil, store.ErrInsufficientFunds
 	if _, err := New(fs, &fakeDeliver{}).Buy(context.Background(), "discord1", 5); !errors.Is(err, store.ErrInsufficientFunds) {
 		t.Fatalf("expected ErrInsufficientFunds, got %v", err)
+	}
+}
+
+func TestBuyKitDeliversAllItems(t *testing.T) {
+	fs := baseStore()
+	fs.kit = &store.Kit{
+		ID: 7, Name: "Starter Pack", Price: 200,
+		Items: []store.KitItem{
+			{GameItemID: "Item_Water", Quantity: 2},
+			{GameItemID: "Item_Spice", Quantity: 1},
+		},
+	}
+	fd := &countingDeliver{}
+	res, err := New(fs, fd).BuyKit(context.Background(), "discord1", 7)
+	if err != nil {
+		t.Fatalf("buykit: %v", err)
+	}
+	if fd.calls != 2 {
+		t.Fatalf("delivered %d items, want 2", fd.calls)
+	}
+	if fs.statusSet != store.DeliveryDone || fs.refunded != 0 {
+		t.Fatalf("status=%q refunded=%d", fs.statusSet, fs.refunded)
+	}
+	if res.Kit.ID != 7 {
+		t.Fatalf("unexpected kit %+v", res.Kit)
+	}
+}
+
+func TestBuyKitRefundsOnFailure(t *testing.T) {
+	fs := baseStore()
+	fs.kit = &store.Kit{
+		ID: 7, Name: "Starter Pack", Price: 200,
+		Items: []store.KitItem{{GameItemID: "Item_Water", Quantity: 1}},
+	}
+	fd := &fakeDeliver{err: errors.New("broker down")}
+	if _, err := New(fs, fd).BuyKit(context.Background(), "discord1", 7); !errors.Is(err, ErrDeliveryFailed) {
+		t.Fatalf("expected ErrDeliveryFailed, got %v", err)
+	}
+	if fs.statusSet != store.DeliveryFailed || fs.refunded != 200 {
+		t.Fatalf("status=%q refunded=%d, want failed/200", fs.statusSet, fs.refunded)
 	}
 }
 
