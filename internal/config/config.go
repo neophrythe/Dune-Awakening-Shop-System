@@ -4,6 +4,7 @@ package config
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"time"
 
@@ -27,6 +28,12 @@ type DatabaseConfig struct {
 	Password string `yaml:"password"`
 	Name     string `yaml:"name"`
 	Schema   string `yaml:"schema"`
+}
+
+// DSN builds a libpq connection string for the configured database.
+func (d DatabaseConfig) DSN() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+		url.QueryEscape(d.User), url.QueryEscape(d.Password), d.Host, d.Port, d.Name)
 }
 
 // DiscordConfig configures the bot.
