@@ -41,6 +41,7 @@ It brings together two proven ideas:
 | | Feature | What it does |
 |---|---|---|
 | 🪙 | **Three-source economy** | Earn via **playtime**, **vote rewards**, and **real-money top-ups** |
+| 🖥️ | **Admin dashboard** | React web panel (login-protected): overview stats, item & kit management, players, live ledger |
 | 🛒 | **Storefront** | Categorised item catalogue with prices, quantities and optional stock limits |
 | 📦 | **Kits & packs** | Bundle several items into one priced purchase — delivered all-or-nothing |
 | 💬 | **Discord-native** | Clean slash commands — `/shop`, `/balance`, `/buy`, `/link` |
@@ -182,7 +183,7 @@ delivery:
 - [x] Discord bot with full shop & admin commands
 - [x] Playtime, vote & real-money economy
 - [x] Kits / packs (multi-item bundles)
-- [ ] Web admin panel (`internal/web`)
+- [x] Web admin dashboard (React SPA, login-protected)
 - [ ] First-class Stripe & PayPal signature verification
 - [ ] Item bundles / kits
 
