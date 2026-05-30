@@ -22,7 +22,7 @@ import (
 )
 
 // Version is the build version, overridable at release time via -ldflags.
-var Version = "0.1.0-dev"
+var Version = "0.7.0"
 
 func main() {
 	// Subcommands run before the server flags are parsed so each can own its

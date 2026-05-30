@@ -1,0 +1,24 @@
+# Dune Awakening Shop — container deployment.
+#
+# Quick start:
+#   1. Generate config:   docker compose run --rm shop setup -o /config/config.yaml
+#   2. Load the catalog:  docker compose run --rm shop seed -config /config/config.yaml -file /app/seed/default-catalog.json
+#   3. Start it:          docker compose up -d
+#
+# Notes:
+#   * network_mode: host lets the shop reach the game's Postgres on localhost
+#     (the same way the bare-metal install does). Ports in config.yaml apply.
+#   * The docker socket is mounted so RMQ delivery can exec rabbitmqctl inside
+#     the AMP container. Omit it if you only use FLS delivery.
+services:
+  shop:
+    build:
+      context: .
+      args:
+        VERSION: compose
+    image: dune-awakening-shop:latest
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./config:/config
+      - /var/run/docker.sock:/var/run/docker.sock

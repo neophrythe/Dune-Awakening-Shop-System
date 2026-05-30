@@ -1,0 +1,61 @@
+name: release
+
+# Build prebuilt Linux binaries (with the embedded dashboard) and attach them
+# to a GitHub Release whenever a v* tag is pushed.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goarch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Build dashboard
+        run: |
+          cd web
+          npm install
+          npm run build
+          cd ..
+          rm -rf internal/web/dist
+          cp -r web/dist internal/web/dist
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Build binary
+        env:
+          GOOS: linux
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: "0"
+        run: |
+          VERSION="${GITHUB_REF_NAME}"
+          go build -tags embed -ldflags "-s -w -X main.Version=${VERSION}" \
+            -o dist/dune-shop ./cmd/dune-shop
+
+      - name: Package
+        run: |
+          NAME="dune-shop_${GITHUB_REF_NAME}_linux_${{ matrix.goarch }}"
+          mkdir -p "pkg/${NAME}"
+          cp dist/dune-shop "pkg/${NAME}/"
+          cp -r seed "pkg/${NAME}/"
+          cp config.example.yaml install.sh README.md LICENSE "pkg/${NAME}/" 2>/dev/null || true
+          tar -C pkg -czf "${NAME}.tar.gz" "${NAME}"
+
+      - name: Publish to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dune-shop_*_linux_*.tar.gz
+          generate_release_notes: true

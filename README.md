@@ -232,3 +232,52 @@ Derived in part from the AGPL-3.0 [Conan-Shop](https://github.com/irrelevantgame
 <div align="center">
 <sub>Built for the *Dune: Awakening* self-hosting community. 🐛 Found a bug or have an idea? <a href="https://github.com/neophrythe/Dune-Awakening-Shop-System/issues">Open an issue.</a></sub>
 </div>
+
+## ⚡ Quick Start
+
+### One command (bare metal)
+
+On the host running your Dune server:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/neophrythe/Dune-Awakening-Shop-System/main/install.sh | bash
+```
+
+The installer checks prerequisites, builds the binary (with the embedded
+dashboard), then runs a **setup wizard** that asks only for your server-unique
+secrets — DB password, Discord bot token + guild id, AMP container name and
+your payment link. Everything else has a sensible default. It then loads the
+**starter catalog** and installs a systemd service.
+
+### Prebuilt binary
+
+Grab a release from [Releases](https://github.com/neophrythe/Dune-Awakening-Shop-System/releases), then:
+
+```bash
+tar xzf dune-shop_*_linux_amd64.tar.gz && cd dune-shop_*
+./dune-shop setup          # interactive — writes config.yaml
+./dune-shop seed           # load the starter catalog
+./dune-shop -config config.yaml
+```
+
+### Docker
+
+```bash
+docker compose run --rm shop setup -o /config/config.yaml
+docker compose run --rm shop seed -config /config/config.yaml -file /app/seed/default-catalog.json
+docker compose up -d
+```
+
+### Manual
+
+```bash
+make build                 # or: make build-server  (no embedded dashboard)
+./dune-shop setup
+./dune-shop seed
+./dune-shop -config config.yaml
+```
+
+> The shop talks to your Dune server's Postgres and (for live delivery) its
+> RabbitMQ inside the AMP container. The wizard's defaults match a standard
+> CubeCoders AMP layout — adjust if yours differs.
+
