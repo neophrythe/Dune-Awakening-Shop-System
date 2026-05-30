@@ -90,6 +90,54 @@ func TestLinkCreditAndPurchase(t *testing.T) {
 	}
 }
 
+func TestKitPurchase(t *testing.T) {
+	ctx := context.Background()
+	s := testStore(t)
+
+	la, err := s.LinkAccount(ctx, "dk", "gk", "Chani")
+	if err != nil {
+		t.Fatalf("link: %v", err)
+	}
+	if _, err := s.Credit(ctx, la.ID, 1000, TxnEarn, "seed"); err != nil {
+		t.Fatalf("credit: %v", err)
+	}
+
+	stock := 1
+	kit := &Kit{
+		Name: "Starter Pack", Price: 300, Stock: &stock, Enabled: true,
+		Items: []KitItem{
+			{GameItemID: "Item_Water", Name: "Water", Quantity: 2},
+			{GameItemID: "Item_Spice", Name: "Spice", Quantity: 1},
+		},
+	}
+	kitID, err := s.CreateKit(ctx, kit)
+	if err != nil {
+		t.Fatalf("create kit: %v", err)
+	}
+
+	got, err := s.GetKit(ctx, kitID)
+	if err != nil || len(got.Items) != 2 {
+		t.Fatalf("get kit: %v items=%d", err, len(got.Items))
+	}
+
+	txn, bought, err := s.PurchaseKit(ctx, la.ID, kitID)
+	if err != nil {
+		t.Fatalf("purchase kit: %v", err)
+	}
+	if txn.KitID == nil || *txn.KitID != kitID || txn.Amount != -300 {
+		t.Fatalf("unexpected txn %+v", txn)
+	}
+	if len(bought.Items) != 2 {
+		t.Fatalf("bought items = %d, want 2", len(bought.Items))
+	}
+	if bal, _ := s.Balance(ctx, la.ID); bal != 700 {
+		t.Fatalf("balance = %d, want 700", bal)
+	}
+	if _, _, err := s.PurchaseKit(ctx, la.ID, kitID); !errors.Is(err, ErrOutOfStock) {
+		t.Fatalf("expected ErrOutOfStock, got %v", err)
+	}
+}
+
 func TestInsufficientFunds(t *testing.T) {
 	ctx := context.Background()
 	s := testStore(t)

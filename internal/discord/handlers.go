@@ -16,13 +16,17 @@ type handlerFunc func(ctx context.Context, i *discordgo.InteractionCreate) error
 
 func (b *Bot) handlers() map[string]handlerFunc {
 	return map[string]handlerFunc{
-		"link":      b.handleLink,
-		"howtolink": b.handleHowToLink,
-		"balance":   b.handleBalance,
-		"shop":      b.handleShop,
-		"buy":       b.handleBuy,
-		"grant":     b.adminOnly(b.handleGrant),
-		"additem":   b.adminOnly(b.handleAddItem),
+		"link":       b.handleLink,
+		"howtolink":  b.handleHowToLink,
+		"balance":    b.handleBalance,
+		"shop":       b.handleShop,
+		"buy":        b.handleBuy,
+		"kits":       b.handleKits,
+		"buykit":     b.handleBuyKit,
+		"grant":      b.adminOnly(b.handleGrant),
+		"additem":    b.adminOnly(b.handleAddItem),
+		"addkit":     b.adminOnly(b.handleAddKit),
+		"addkititem": b.adminOnly(b.handleAddKitItem),
 	}
 }
 
@@ -203,6 +207,123 @@ func (b *Bot) handleBuy(ctx context.Context, i *discordgo.InteractionCreate) err
 	}
 	b.respond(i, fmt.Sprintf("✅ Bought **%s**! New balance: **%d %s**.",
 		res.Item.Name, res.NewBalance, b.currency))
+	return nil
+}
+
+func (b *Bot) handleKits(ctx context.Context, i *discordgo.InteractionCreate) error {
+	kits, err := b.store.ListKits(ctx, true)
+	if err != nil {
+		return err
+	}
+	if len(kits) == 0 {
+		b.respondEphemeral(i, "There are no kits available right now.")
+		return nil
+	}
+	var sb strings.Builder
+	cat := "\x00"
+	for _, k := range kits {
+		if k.Category != cat {
+			cat = k.Category
+			label := cat
+			if label == "" {
+				label = "Packs"
+			}
+			fmt.Fprintf(&sb, "\n__**%s**__\n", label)
+		}
+		stock := ""
+		if k.Stock != nil {
+			stock = fmt.Sprintf(" · stock %d", *k.Stock)
+		}
+		fmt.Fprintf(&sb, "`#%d` **%s** — %d %s%s\n", k.ID, k.Name, k.Price, b.currency, stock)
+		if k.Description != "" {
+			fmt.Fprintf(&sb, "_%s_\n", k.Description)
+		}
+		for _, it := range k.Items {
+			label := it.Name
+			if label == "" {
+				label = it.GameItemID
+			}
+			fmt.Fprintf(&sb, "• %d× %s\n", it.Quantity, label)
+		}
+	}
+	b.respondEmbed(i, &discordgo.MessageEmbed{
+		Title:       "📦 Kits & Packs",
+		Description: sb.String(),
+		Color:       0xC97B3C,
+		Footer:      &discordgo.MessageEmbedFooter{Text: "Buy with /buykit kit_id:<#>"},
+	})
+	return nil
+}
+
+func (b *Bot) handleBuyKit(ctx context.Context, i *discordgo.InteractionCreate) error {
+	kitID := optMap(i)["kit_id"].IntValue()
+	res, err := b.shop.BuyKit(ctx, callerID(i), kitID)
+	switch {
+	case errors.Is(err, shop.ErrNotLinked):
+		b.respondEphemeral(i, "Link your account first with `/link`.")
+		return nil
+	case errors.Is(err, store.ErrInsufficientFunds):
+		b.respondEphemeral(i, "❌ You don't have enough balance for that kit.")
+		return nil
+	case errors.Is(err, store.ErrOutOfStock):
+		b.respondEphemeral(i, "❌ That kit is out of stock.")
+		return nil
+	case errors.Is(err, store.ErrItemUnavailable) || errors.Is(err, store.ErrNotFound):
+		b.respondEphemeral(i, "❌ That kit isn't available.")
+		return nil
+	case errors.Is(err, shop.ErrDeliveryFailed):
+		b.respondEphemeral(i, "⚠️ Couldn't deliver the kit in-game — you were refunded. Make sure you're online and try again.")
+		return nil
+	case err != nil:
+		return err
+	}
+	b.respond(i, fmt.Sprintf("✅ Bought the **%s** kit (%d items)! New balance: **%d %s**.",
+		res.Kit.Name, len(res.Kit.Items), res.NewBalance, b.currency))
+	return nil
+}
+
+func (b *Bot) handleAddKit(ctx context.Context, i *discordgo.InteractionCreate) error {
+	o := optMap(i)
+	k := &store.Kit{
+		Name:    o["name"].StringValue(),
+		Price:   o["price"].IntValue(),
+		Enabled: true,
+	}
+	if v, ok := o["category"]; ok {
+		k.Category = v.StringValue()
+	}
+	if v, ok := o["description"]; ok {
+		k.Description = v.StringValue()
+	}
+	id, err := b.store.CreateKit(ctx, k)
+	if err != nil {
+		return err
+	}
+	b.respondEphemeral(i, fmt.Sprintf("✅ Created kit `#%d` **%s** for %d %s.\nAdd items with `/addkititem kit_id:%d game_item_id:<id>`.",
+		id, k.Name, k.Price, b.currency, id))
+	return nil
+}
+
+func (b *Bot) handleAddKitItem(ctx context.Context, i *discordgo.InteractionCreate) error {
+	o := optMap(i)
+	kitID := o["kit_id"].IntValue()
+	qty := 1
+	if v, ok := o["quantity"]; ok {
+		if n := int(v.IntValue()); n >= 1 {
+			qty = n
+		}
+	}
+	it := store.KitItem{GameItemID: o["game_item_id"].StringValue(), Quantity: qty}
+	if v, ok := o["name"]; ok {
+		it.Name = v.StringValue()
+	}
+	if err := b.store.AddKitItem(ctx, kitID, it); errors.Is(err, store.ErrNotFound) {
+		b.respondEphemeral(i, fmt.Sprintf("❌ No kit with id `#%d`. Create it first with `/addkit`.", kitID))
+		return nil
+	} else if err != nil {
+		return err
+	}
+	b.respondEphemeral(i, fmt.Sprintf("✅ Added %d× `%s` to kit `#%d`.", qty, it.GameItemID, kitID))
 	return nil
 }
 

@@ -23,6 +23,34 @@ func commandDefs() []*discordgo.ApplicationCommand {
 				{Type: discordgo.ApplicationCommandOptionInteger, Name: "item_id", Description: "Item id (see /shop)", Required: true, MinValue: &minOne},
 			},
 		},
+		{Name: "kits", Description: "Browse item packs/kits (bundles of items)"},
+		{
+			Name:        "buykit",
+			Description: "Buy a kit/pack — delivers all its items at once",
+			Options: []*discordgo.ApplicationCommandOption{
+				{Type: discordgo.ApplicationCommandOptionInteger, Name: "kit_id", Description: "Kit id (see /kits)", Required: true, MinValue: &minOne},
+			},
+		},
+		{
+			Name:        "addkit",
+			Description: "(admin) Create a new kit/pack",
+			Options: []*discordgo.ApplicationCommandOption{
+				{Type: discordgo.ApplicationCommandOptionString, Name: "name", Description: "Kit display name", Required: true},
+				{Type: discordgo.ApplicationCommandOptionInteger, Name: "price", Description: "Kit price", Required: true, MinValue: &minOne},
+				{Type: discordgo.ApplicationCommandOptionString, Name: "category", Description: "Category (optional)"},
+				{Type: discordgo.ApplicationCommandOptionString, Name: "description", Description: "Short description (optional)"},
+			},
+		},
+		{
+			Name:        "addkititem",
+			Description: "(admin) Add an item to an existing kit",
+			Options: []*discordgo.ApplicationCommandOption{
+				{Type: discordgo.ApplicationCommandOptionInteger, Name: "kit_id", Description: "Kit id (see /kits)", Required: true, MinValue: &minOne},
+				{Type: discordgo.ApplicationCommandOptionString, Name: "game_item_id", Description: "In-game item id", Required: true},
+				{Type: discordgo.ApplicationCommandOptionInteger, Name: "quantity", Description: "Amount (default 1)", MinValue: &minOne},
+				{Type: discordgo.ApplicationCommandOptionString, Name: "name", Description: "Item display name (optional)"},
+			},
+		},
 		{
 			Name:        "grant",
 			Description: "(admin) Grant currency to a user",

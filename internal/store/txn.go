@@ -11,7 +11,7 @@ func (s *Store) ListTransactions(ctx context.Context, accountID int64, limit int
 		limit = 50
 	}
 	rows, err := s.pool.Query(ctx,
-		`SELECT id, linked_account_id, kind, amount, catalog_item_id, delivery, note, created_at
+		`SELECT id, linked_account_id, kind, amount, catalog_item_id, kit_id, delivery, note, created_at
 		 FROM dune_shop.transactions WHERE linked_account_id=$1
 		 ORDER BY created_at DESC LIMIT $2`, accountID, limit)
 	if err != nil {
@@ -22,7 +22,7 @@ func (s *Store) ListTransactions(ctx context.Context, accountID int64, limit int
 	for rows.Next() {
 		var t Transaction
 		if err := rows.Scan(&t.ID, &t.LinkedAccountID, &t.Kind, &t.Amount,
-			&t.CatalogItemID, &t.Delivery, &t.Note, &t.CreatedAt); err != nil {
+			&t.CatalogItemID, &t.KitID, &t.Delivery, &t.Note, &t.CreatedAt); err != nil {
 			return nil, fmt.Errorf("scan txn: %w", err)
 		}
 		out = append(out, t)

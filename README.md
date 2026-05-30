@@ -42,6 +42,7 @@ It brings together two proven ideas:
 |---|---|---|
 | 🪙 | **Three-source economy** | Earn via **playtime**, **vote rewards**, and **real-money top-ups** |
 | 🛒 | **Storefront** | Categorised item catalogue with prices, quantities and optional stock limits |
+| 📦 | **Kits & packs** | Bundle several items into one priced purchase — delivered all-or-nothing |
 | 💬 | **Discord-native** | Clean slash commands — `/shop`, `/balance`, `/buy`, `/link` |
 | 🔗 | **Account linking** | Bind a Discord user to their in-game character |
 | 📦 | **Dual delivery** | **FLS / PlayFab** grant (works offline) **+ live RMQ** spawn — or both with automatic fallback |
@@ -61,8 +62,12 @@ It brings together two proven ideas:
 | `/balance` | Everyone | Show your current currency balance |
 | `/shop` | Everyone | Browse the item catalogue |
 | `/buy <item_id>` | Everyone | Purchase an item — delivered in-game instantly |
+| `/kits` | Everyone | Browse item **packs/kits** (bundles of items) |
+| `/buykit <kit_id>` | Everyone | Buy a kit — all its items delivered at once |
 | `/grant <user> <amount>` | 🛡️ Admin | Grant currency to a member |
 | `/additem <game_item_id> <name> <price> …` | 🛡️ Admin | Add or update a shop item |
+| `/addkit <name> <price> …` | 🛡️ Admin | Create a new kit/pack |
+| `/addkititem <kit_id> <game_item_id> …` | 🛡️ Admin | Add an item to a kit |
 
 ### 🔗 Linking for non-technical players
 
@@ -176,6 +181,7 @@ delivery:
 - [x] Dual in-game delivery (FLS/PlayFab + RMQ)
 - [x] Discord bot with full shop & admin commands
 - [x] Playtime, vote & real-money economy
+- [x] Kits / packs (multi-item bundles)
 - [ ] Web admin panel (`internal/web`)
 - [ ] First-class Stripe & PayPal signature verification
 - [ ] Item bundles / kits
