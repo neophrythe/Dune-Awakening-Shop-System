@@ -23,3 +23,4 @@ vendor/
 .vscode/
 .DS_Store
 *.swp
+/internal/web/dist/
