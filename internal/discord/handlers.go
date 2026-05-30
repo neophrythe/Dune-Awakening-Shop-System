@@ -96,7 +96,7 @@ func (b *Bot) handleHowToLink(_ context.Context, i *discordgo.InteractionCreate)
 
 func (b *Bot) handleLink(ctx context.Context, i *discordgo.InteractionCreate) error {
 	o := optMap(i)
-	character := strings.TrimSpace(o["character"].StringValue())
+	character := strings.TrimSpace(o["name"].StringValue())
 	accountID := ""
 	if v, ok := o["account_id"]; ok {
 		accountID = strings.TrimSpace(v.StringValue())
