@@ -1,0 +1,33 @@
+# Dune Awakening Shop — example configuration.
+# Copy to config.yaml and fill in. config.yaml is git-ignored.
+# Secrets may also be provided via environment variables (override this file):
+#   DUNE_SHOP_DISCORD_TOKEN, DUNE_SHOP_DB_PASS, DUNE_SHOP_FLS_TOKEN
+
+# HTTP admin/web panel (later milestone)
+listen_addr: "0.0.0.0:8090"
+
+# Postgres — the Dune game database (AMP host-networking exposes it on localhost)
+database:
+  host: "127.0.0.1"
+  port: 15432
+  user: "postgres"
+  password: "postgres"   # prefer DUNE_SHOP_DB_PASS env var
+  name: "dune"
+  schema: "dune"
+
+# Discord bot
+discord:
+  token: ""              # prefer DUNE_SHOP_DISCORD_TOKEN env var
+  guild_id: ""           # your Discord server id (for fast slash-command registration)
+  admin_role_id: ""      # role allowed to run admin commands
+
+# Economy — playtime rewards
+economy:
+  currency_name: "Solari"
+  per_minute: 1          # currency granted per minute online
+  accrual_interval: "60s"
+
+# In-game delivery (ported from dune-admin's AMP/FLS path)
+delivery:
+  amp_container: "AMP_BuGIsland01"
+  fls_token: ""          # prefer DUNE_SHOP_FLS_TOKEN env var

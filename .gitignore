@@ -1,0 +1,25 @@
+# Binaries
+/dune-shop
+/bin/
+*.exe
+*.test
+*.out
+
+# Local config & secrets — never commit these
+config.yaml
+*.local.yaml
+.env
+*.key
+*.jwt
+secrets/
+
+# Build / tooling
+/dist/
+/tmp/
+vendor/
+
+# Editor / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
