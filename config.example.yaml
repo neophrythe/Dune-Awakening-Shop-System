@@ -48,6 +48,16 @@ economy:
     secret_key: ""           # prefer DUNE_SHOP_PAYMENT_SECRET env var
     webhook_secret: ""       # shared secret for the payment webhook
 
+# Game-database lookups (deployment-specific)
+game:
+  # Lets players link with ONLY their character name — the bot resolves the
+  # account id from the game DB so non-technical users never need an id.
+  # Must take the character name as $1 and return one text column (account id).
+  # Leave empty to require players to supply an account id manually.
+  # Example (adjust table/column names to your schema):
+  #   character_lookup_query: "SELECT account_id FROM dune.characters WHERE name = $1 LIMIT 1"
+  character_lookup_query: ""
+
 # In-game delivery (ported from dune-admin's AMP/FLS path)
 delivery:
   mode: "both"             # fls | rmq | both (both = FLS first, RMQ fallback)

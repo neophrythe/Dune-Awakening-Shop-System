@@ -7,12 +7,13 @@ func commandDefs() []*discordgo.ApplicationCommand {
 	return []*discordgo.ApplicationCommand{
 		{
 			Name:        "link",
-			Description: "Link your Discord to your in-game Dune account",
+			Description: "Connect your Discord to your in-game character (run /howtolink if unsure)",
 			Options: []*discordgo.ApplicationCommandOption{
-				{Type: discordgo.ApplicationCommandOptionString, Name: "account_id", Description: "Your in-game account id", Required: true},
-				{Type: discordgo.ApplicationCommandOptionString, Name: "character", Description: "Your character name", Required: true},
+				{Type: discordgo.ApplicationCommandOptionString, Name: "character", Description: "Your exact in-game character name (case-sensitive)", Required: true},
+				{Type: discordgo.ApplicationCommandOptionString, Name: "account_id", Description: "Only if asked: your account/FLS id. Usually leave this blank.", Required: false},
 			},
 		},
+		{Name: "howtolink", Description: "Step-by-step help for linking your account"},
 		{Name: "balance", Description: "Show your shop balance"},
 		{Name: "shop", Description: "Browse the shop"},
 		{

@@ -16,15 +16,18 @@ import (
 
 // Bot is the Discord bot.
 type Bot struct {
-	session  *discordgo.Session
-	cfg      config.DiscordConfig
-	store    *store.Store
-	shop     *shop.Service
-	currency string
+	session    *discordgo.Session
+	cfg        config.DiscordConfig
+	store      *store.Store
+	shop       *shop.Service
+	currency   string
+	charLookup string // game-DB query resolving character name -> account id
 }
 
-// New creates the bot. Call Start to connect and register commands.
-func New(cfg config.DiscordConfig, st *store.Store, svc *shop.Service, currency string) (*Bot, error) {
+// New creates the bot. Call Start to connect and register commands. When
+// charLookupQuery is non-empty, players can link with just their character name
+// (the account id is resolved from the game database automatically).
+func New(cfg config.DiscordConfig, st *store.Store, svc *shop.Service, currency, charLookupQuery string) (*Bot, error) {
 	if cfg.Token == "" {
 		return nil, fmt.Errorf("discord: token required")
 	}
@@ -32,10 +35,13 @@ func New(cfg config.DiscordConfig, st *store.Store, svc *shop.Service, currency 
 	if err != nil {
 		return nil, fmt.Errorf("discord session: %w", err)
 	}
-	b := &Bot{session: s, cfg: cfg, store: st, shop: svc, currency: currency}
+	b := &Bot{session: s, cfg: cfg, store: st, shop: svc, currency: currency, charLookup: charLookupQuery}
 	s.AddHandler(b.onInteraction)
 	return b, nil
 }
+
+// nameOnlyLinking reports whether players can link with just a character name.
+func (b *Bot) nameOnlyLinking() bool { return b.charLookup != "" }
 
 // Start opens the gateway and registers slash commands.
 func (b *Bot) Start() error {

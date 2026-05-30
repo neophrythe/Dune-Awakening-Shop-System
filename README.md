@@ -56,12 +56,28 @@ It brings together two proven ideas:
 
 | Command | Who | Description |
 |---|---|---|
-| `/link <account_id> <character>` | Everyone | Link your Discord to your in-game account |
+| `/link <character>` | Everyone | Link your Discord to your in-game character |
+| `/howtolink` | Everyone | Step-by-step linking help for new players |
 | `/balance` | Everyone | Show your current currency balance |
 | `/shop` | Everyone | Browse the item catalogue |
 | `/buy <item_id>` | Everyone | Purchase an item — delivered in-game instantly |
 | `/grant <user> <amount>` | 🛡️ Admin | Grant currency to a member |
 | `/additem <game_item_id> <name> <price> …` | 🛡️ Admin | Add or update a shop item |
+
+### 🔗 Linking for non-technical players
+
+Players shouldn't need to hunt for a cryptic ID. When you set a
+`game.character_lookup_query` in the config, linking is as simple as:
+
+```
+/link character:Muad'Dib
+```
+
+The bot resolves the in-game account from the **character name** automatically —
+no account id required. The built-in **`/howtolink`** command walks members
+through it (and reminds them names are case-sensitive). If you leave the lookup
+query empty, `/link` falls back to asking for an account id, and `/howtolink`
+explains that flow instead.
 
 ---
 
