@@ -115,25 +115,64 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design.
 
 ## ⚡ Quick Start
 
-> **Requirements:** Go 1.26+, a PostgreSQL database (your *Dune: Awakening* game DB, e.g.
-> exposed by a CubeCoders AMP deployment), and a Discord bot token.
+> **Requirements:** a PostgreSQL database (your *Dune: Awakening* server's — the
+> same DB whether you run the server via **CubeCoders AMP** or **docker-compose**),
+> a Discord bot token, and Go 1.22+ only if you build from source.
+
+### Which delivery mode do I use?
+
+The shop is **not** AMP-specific — it delivers items to any self-hosted Dune server:
+
+| Your Dune server runs as… | Use mode | Why |
+|---|---|---|
+| CubeCoders **AMP** (Docker) | `rmq` (or `both`) | live instant delivery; the defaults match AMP |
+| Plain **docker-compose** container | `rmq` (or `both`) | same path — just set your container name + `mq_root` |
+| **Bare metal**, no container | `fls` | account-level grant over HTTPS; no Docker needed |
+
+`rmq` runs `docker exec <container> …` against the server's bundled RabbitMQ, so it
+works for **any** containerised Dune server. Bare-metal hosts use `fls` instead.
+The setup wizard asks for whichever the chosen mode needs.
+
+### Install — pick one path
+
+**One command (recommended)** — on the host running your Dune server:
 
 ```bash
-# 1. Clone
-git clone https://github.com/neophrythe/Dune-Awakening-Shop-System.git
-cd Dune-Awakening-Shop-System
+curl -fsSL https://raw.githubusercontent.com/neophrythe/Dune-Awakening-Shop-System/main/install.sh | bash
+```
 
-# 2. Configure
-cp config.example.yaml config.yaml
-$EDITOR config.yaml          # DB, Discord token, economy & delivery settings
+Checks prerequisites, builds the binary (embedded dashboard), runs the **setup
+wizard** (asks only for your secrets/IDs), loads the **starter catalog**, and
+installs a systemd service.
 
-# 3. Build & run
-go build -o dune-shop ./cmd/dune-shop
+**Prebuilt binary** — from [Releases](https://github.com/neophrythe/Dune-Awakening-Shop-System/releases):
+
+```bash
+tar xzf dune-shop_*_linux_amd64.tar.gz && cd dune-shop_*
+./dune-shop setup           # interactive — writes config.yaml
+./dune-shop seed            # load the starter catalog
+./dune-shop -config config.yaml
+```
+
+**Docker / docker-compose:**
+
+```bash
+docker compose run --rm shop setup -o /config/config.yaml
+docker compose run --rm shop seed -config /config/config.yaml -file /app/seed/default-catalog.json
+docker compose up -d
+```
+
+**From source:**
+
+```bash
+make build                  # or: make build-server  (no embedded dashboard)
+./dune-shop setup
+./dune-shop seed
 ./dune-shop -config config.yaml
 ```
 
 The service migrates its own schema on first run, connects the delivery engine,
-starts the Discord bot, and (if enabled) launches the playtime worker and webhook
+starts the Discord bot, and (if enabled) runs the playtime worker and webhook
 server.
 
 ### 🔐 Secrets via environment
