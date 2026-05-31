@@ -54,11 +54,15 @@ func runSetup(args []string) {
 	c.Database.Schema = ask(r, "Game schema", "dune")
 
 	fmt.Println("\n-- Delivery (how items are granted in-game) --")
+	fmt.Println("  rmq  = live, instant; needs the game server in a Docker container (AMP or compose)")
+	fmt.Println("  fls  = account-level via PlayFab; works offline and without Docker (bare metal)")
+	fmt.Println("  both = try fls first, fall back to rmq")
 	c.Delivery.Mode = ask(r, "Delivery mode (rmq/fls/both)", "rmq")
 	if c.Delivery.Mode == "rmq" || c.Delivery.Mode == "both" {
-		c.Delivery.AMPContainer = ask(r, "AMP container name *", "")
+		fmt.Println("  (find the container with `docker ps`; AMP names look like AMP_Dune01)")
+		c.Delivery.AMPContainer = ask(r, "Game server container name *", "")
 		c.Delivery.MQNode = ask(r, "RabbitMQ node", "rabbit@dune01")
-		c.Delivery.MQRoot = ask(r, "Server binaries dir (mq_root)",
+		c.Delivery.MQRoot = ask(r, "Server Linux binaries dir inside the container (mq_root)",
 			"/AMP/instances/Dune01/0/Dune/DuneServer/DuneServer/Binaries/Linux")
 		c.Delivery.MQHome = ask(r, "HOME for rabbitmqctl (mq_home)", "/tmp")
 	}

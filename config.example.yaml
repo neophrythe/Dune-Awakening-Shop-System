@@ -58,15 +58,30 @@ game:
   #   character_lookup_query: "SELECT account_id FROM dune.characters WHERE name = $1 LIMIT 1"
   character_lookup_query: ""
 
-# In-game delivery (ported from dune-admin's AMP/FLS path)
+# In-game delivery (ported from dune-admin's AMP/FLS path).
+#
+# Pick the mode that matches how YOUR Dune server runs:
+#   rmq  – live, instant delivery to online players. Works for any Dune server
+#          running in a Docker container — both CubeCoders AMP and a plain
+#          docker-compose self-host. It runs `docker exec <container> …` to
+#          publish to the server's bundled RabbitMQ, so the shop must run on the
+#          same host and reach the docker socket. Set the container name + paths
+#          below to match your container.
+#   fls  – account-level grant via PlayFab over HTTPS. No Docker, no container,
+#          works even when the player is offline. Use this for a bare-metal
+#          server (no container) or if you'd rather not expose the docker socket.
+#   both – try fls first, fall back to rmq.
 delivery:
-  mode: "both"             # fls | rmq | both (both = FLS first, RMQ fallback)
+  mode: "both"             # fls | rmq | both
 
-  # FLS / PlayFab grant (account-level, works offline)
+  # FLS / PlayFab grant (account-level, works offline; no Docker needed)
   fls_token: ""            # ServiceAuthToken; prefer DUNE_SHOP_FLS_TOKEN env var
   playfab_title_id: ""     # PlayFab title id
 
-  # RMQ SpawnItem (live, player must be online) — runs inside the AMP container
+  # RMQ live delivery (player must be online) — execs into the game container.
+  # amp_container: any docker container name (`docker ps`); AMP uses AMP_<name>.
+  # mq_root: the server's extracted Linux binaries dir INSIDE that container,
+  #          where the bundled erlang/rabbitmq live (varies by image/layout).
   amp_container: "AMP_BuGIsland01"
   mq_root: "/AMP/duneawakening/extracted/mq"
   mq_home: "/AMP/duneawakening/runtime/mq-game-home"

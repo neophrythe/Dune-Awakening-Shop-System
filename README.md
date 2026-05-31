@@ -156,15 +156,23 @@ Highlights:
 
 ```yaml
 economy:
-  currency_name: "Solari"
-  playtime:   { enabled: true,  per_minute: 1, accrual_interval: "60s" }
-  votes:      { enabled: false, reward: 100 }
-  realmoney:  { enabled: false, provider: "stripe" }
+  currency_name: "Spice"
+  playtime:   { enabled: true,  per_minute: 10, accrual_interval: "60s" }
+  votes:      { enabled: false, reward: 500 }
+  realmoney:  { enabled: true,  provider: "manual" }   # admin-confirmed donations
 
 delivery:
-  mode: "both"            # fls | rmq | both  (both = FLS first, RMQ fallback)
-  amp_container: "AMP_BuGIsland01"
+  mode: "both"             # fls | rmq | both  (both = FLS first, RMQ fallback)
+  # rmq — any containerised Dune server (AMP or docker-compose):
+  amp_container: "AMP_BuGIsland01"   # your container name (`docker ps`)
+  mq_root: "/AMP/duneawakening/extracted/mq"   # server binaries dir in container
+  # fls — bare metal / no Docker:
+  fls_token: ""            # ServiceAuthToken (or DUNE_SHOP_FLS_TOKEN)
+  playfab_title_id: ""
 ```
+
+> Don't hand-edit unless you want to — `dune-shop setup` writes a complete,
+> valid config from a few prompts (see Quick Start above).
 
 ### Webhooks
 
@@ -223,61 +231,9 @@ gofmt -s -w . && go vet ./... && go build ./... && go test ./...
 
 ## 📜 License
 
-Licensed under the **[GNU AGPL-3.0](LICENSE)** © 2026 neophrythe.
+This project is licensed under the **GNU Affero General Public License v3.0** —
+see [LICENSE](LICENSE). The AGPL keeps the shop and any hosted/modified version
+open: if you run a changed copy as a service, you must share your changes.
 
-Derived in part from the AGPL-3.0 [Conan-Shop](https://github.com/irrelevantgamers/Conan-Shop)
-(Discord/economy concept) and [`dune-admin`](https://github.com/Icehunter/dune-admin)
-(in-game delivery). Not affiliated with or endorsed by Funcom.
-
-<div align="center">
-<sub>Built for the *Dune: Awakening* self-hosting community. 🐛 Found a bug or have an idea? <a href="https://github.com/neophrythe/Dune-Awakening-Shop-System/issues">Open an issue.</a></sub>
-</div>
-
-## ⚡ Quick Start
-
-### One command (bare metal)
-
-On the host running your Dune server:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/neophrythe/Dune-Awakening-Shop-System/main/install.sh | bash
-```
-
-The installer checks prerequisites, builds the binary (with the embedded
-dashboard), then runs a **setup wizard** that asks only for your server-unique
-secrets — DB password, Discord bot token + guild id, AMP container name and
-your payment link. Everything else has a sensible default. It then loads the
-**starter catalog** and installs a systemd service.
-
-### Prebuilt binary
-
-Grab a release from [Releases](https://github.com/neophrythe/Dune-Awakening-Shop-System/releases), then:
-
-```bash
-tar xzf dune-shop_*_linux_amd64.tar.gz && cd dune-shop_*
-./dune-shop setup          # interactive — writes config.yaml
-./dune-shop seed           # load the starter catalog
-./dune-shop -config config.yaml
-```
-
-### Docker
-
-```bash
-docker compose run --rm shop setup -o /config/config.yaml
-docker compose run --rm shop seed -config /config/config.yaml -file /app/seed/default-catalog.json
-docker compose up -d
-```
-
-### Manual
-
-```bash
-make build                 # or: make build-server  (no embedded dashboard)
-./dune-shop setup
-./dune-shop seed
-./dune-shop -config config.yaml
-```
-
-> The shop talks to your Dune server's Postgres and (for live delivery) its
-> RabbitMQ inside the AMP container. The wizard's defaults match a standard
-> CubeCoders AMP layout — adjust if yours differs.
-
+> Built on the shoulders of the open-source Dune community tools that came
+> before it. Community software, not affiliated with Funcom.
